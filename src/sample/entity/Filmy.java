@@ -6,9 +6,16 @@ import javafx.beans.property.SimpleStringProperty;
 public class Filmy {
 
     private SimpleIntegerProperty idFilmu;
-    private SimpleIntegerProperty czasTrwania;
+    private SimpleStringProperty czasTrwania;
     private SimpleStringProperty opis;
     private SimpleStringProperty tytul;
+
+    public Filmy() {
+        this.idFilmu = new SimpleIntegerProperty();
+        this.czasTrwania = new SimpleStringProperty();
+        this.opis = new SimpleStringProperty();
+        this.tytul = new SimpleStringProperty();
+    }
 
     public int getIdFilmu() {
         return idFilmu.get();
@@ -22,15 +29,15 @@ public class Filmy {
         this.idFilmu.set(idFilmu);
     }
 
-    public int getCzasTrwania() {
+    public String getCzasTrwania() {
         return czasTrwania.get();
     }
 
-    public SimpleIntegerProperty czasTrwaniaProperty() {
+    public SimpleStringProperty czasTrwaniaProperty() {
         return czasTrwania;
     }
 
-    public void setCzasTrwania(int czasTrwania) {
+    public void setCzasTrwania(String czasTrwania) {
         this.czasTrwania.set(czasTrwania);
     }
 

@@ -1,16 +1,25 @@
 package sample.entity;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 public class Seanse {
 
     private SimpleIntegerProperty idFilmu;
-    private SimpleIntegerProperty idMiejsca;
+    private SimpleIntegerProperty idSali;
     private SimpleIntegerProperty idSeansu;
-    private LocalDateTime dataSeansu;
-    private LocalDateTime godzina;
+    private DateFormat dataSeansu;
+
+    public Seanse() {
+        this.idFilmu = new SimpleIntegerProperty();
+        this.idSali = new SimpleIntegerProperty();
+        this.idSeansu = new SimpleIntegerProperty();
+        this.dataSeansu = new SimpleDateFormat();
+    }
 
     public int getIdFilmu() {
         return idFilmu.get();
@@ -24,16 +33,16 @@ public class Seanse {
         this.idFilmu.set(idFilmu);
     }
 
-    public int getIdMiejsca() {
-        return idMiejsca.get();
+    public int getIdSali() {
+        return idSali.get();
     }
 
-    public SimpleIntegerProperty idMiejscaProperty() {
-        return idMiejsca;
+    public SimpleIntegerProperty idSaliProperty() {
+        return idSali;
     }
 
-    public void setIdMiejsca(int idMiejsca) {
-        this.idMiejsca.set(idMiejsca);
+    public void setIdSali(int idSali) {
+        this.idSali.set(idSali);
     }
 
     public int getIdSeansu() {
@@ -48,19 +57,11 @@ public class Seanse {
         this.idSeansu.set(idSeansu);
     }
 
-    public LocalDateTime getDataSeansu() {
+    public DateFormat getDataSeansu() {
         return dataSeansu;
     }
 
-    public void setDataSeansu(LocalDateTime dataSeansu) {
+    public void setDataSeansu(DateFormat dataSeansu) {
         this.dataSeansu = dataSeansu;
-    }
-
-    public LocalDateTime getGodzina() {
-        return godzina;
-    }
-
-    public void setGodzina(LocalDateTime godzina) {
-        this.godzina = godzina;
     }
 }
