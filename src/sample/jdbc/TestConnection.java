@@ -1,29 +1,33 @@
 package sample.jdbc;
 
-import java.sql.*;
+import sample.entity.Filmy;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 
 public class TestConnection {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
-        try{
+        DatabaseConnector connector = new DatabaseConnector();
 
-            String url = "jdbc:sqlite:src/sample/resources/static/music.db";
-            Connection conn = DriverManager.getConnection(url);
-            Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM artists");
+        List<Filmy> filmy = connector.queryFilmy();
 
-            while (resultSet.next()){
-                System.out.println( resultSet.getString("name"));
-
-
-            }
-
-        } catch (SQLException exc){
-            System.out.println("Connection error: " + exc.getMessage());
+        for(Filmy film : filmy){
+            System.out.println(film);
         }
 
-    }
+        connector.generujMiejsca();
 
+        try {
+            connector.getConnection().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
 }

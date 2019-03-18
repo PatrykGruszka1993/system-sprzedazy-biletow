@@ -6,15 +6,15 @@ import javafx.beans.property.SimpleStringProperty;
 public class Filmy {
 
     private SimpleIntegerProperty idFilmu;
+    private SimpleStringProperty tytul;
     private SimpleStringProperty czasTrwania;
     private SimpleStringProperty opis;
-    private SimpleStringProperty tytul;
 
     public Filmy() {
         this.idFilmu = new SimpleIntegerProperty();
+        this.tytul = new SimpleStringProperty();
         this.czasTrwania = new SimpleStringProperty();
         this.opis = new SimpleStringProperty();
-        this.tytul = new SimpleStringProperty();
     }
 
     public int getIdFilmu() {
@@ -27,6 +27,18 @@ public class Filmy {
 
     public void setIdFilmu(int idFilmu) {
         this.idFilmu.set(idFilmu);
+    }
+
+    public String getTytul() {
+        return tytul.get();
+    }
+
+    public SimpleStringProperty tytulProperty() {
+        return tytul;
+    }
+
+    public void setTytul(String tytul) {
+        this.tytul.set(tytul);
     }
 
     public String getCzasTrwania() {
@@ -53,15 +65,13 @@ public class Filmy {
         this.opis.set(opis);
     }
 
-    public String getTytul() {
-        return tytul.get();
-    }
-
-    public SimpleStringProperty tytulProperty() {
-        return tytul;
-    }
-
-    public void setTytul(String tytul) {
-        this.tytul.set(tytul);
+    @Override
+    public String toString() {
+        return "Filmy{" +
+                "idFilmu=" + idFilmu +
+                ", czasTrwania=" + czasTrwania +
+                ", opis=" + opis +
+                ", tytul=" + tytul +
+                '}';
     }
 }
