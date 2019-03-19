@@ -92,4 +92,16 @@ public class Miejsca {
     public void setRzad(int rzad) {
         this.rzad.set(rzad);
     }
+
+    @Override
+    public String toString() {
+        return "Miejsca{" +
+                "idMiejsca=" + idMiejsca +
+                ", idFilmu=" + idFilmu +
+                ", idSali=" + idSali +
+                ", idSeansu=" + idSeansu +
+                ", nrMiejsca=" + nrMiejsca +
+                ", rzad=" + rzad +
+                '}';
+    }
 }
