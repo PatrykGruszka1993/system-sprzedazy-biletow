@@ -1,5 +1,6 @@
 package sample.jdbc;
 
+import sample.entity.Bilety;
 import sample.entity.Filmy;
 import sample.entity.Miejsca;
 import sample.entity.Seanse;
@@ -12,7 +13,6 @@ import java.util.List;
 public class DatabaseConnector{
 
     public static final String DB_NAME = "production.db";
-
 
     public static final String TABLE_BILETY = "Bilety";
     public static final String COLUMN_BILETY_ID_BILETU = "id_biletu";
@@ -29,7 +29,6 @@ public class DatabaseConnector{
     public static final int INDEX_BILETY_ID_MIEJSCA = 5;
     public static final int INDEX_BILETY_ID_TRANSAKCJI = 6;
     public static final int INDEX_BILETY_TYP_BILETU = 7;
-
 
     public static final String TABLE_FILMY = "Filmy";
     public static final String COLUMN_FILMY_ID_FILMU = "id_filmu";
@@ -73,7 +72,7 @@ public class DatabaseConnector{
 
     public static final String TABLE_TRANSAKCJE = "Transakcje";
     public static final String COLUMN_TRANSAKCJE_ID_TRANSAKCJI = "id_transakcji";
-    public static final String COULMN_TRANSAKCJE_WARTOSC_TRANSAKCJI = "wartosc_transakcji";
+    public static final String COLUMN_TRANSAKCJE_WARTOSC_TRANSAKCJI = "wartosc_transakcji";
     public static final int INDEX_TRANSAKCJE_ID_TRANSAKCJI = 1;
     public static final int INDEX_TRANSAKCJE_WARTOSC_TRANSAKCJI = 2;
 
@@ -85,12 +84,10 @@ public class DatabaseConnector{
                    " INNER JOIN " + TABLE_BILETY + " ON " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_MIEJSCA + " = " + TABLE_BILETY + "." + COLUMN_BILETY_ID_MIEJSCA +
             " WHERE " + TABLE_BILETY + "." + COLUMN_BILETY_ID_SEANSU +" =?;";
 
-
     public static final String UTWORZ_SEANS =
             "INSERT INTO " + TABLE_SEANSE +
                     " (" + COLUMN_SEANSE_ID_FILMU + ", " + COLUMN_SEANSE_ID_SALI + ", " + COLUMN_SEASNE_DATA_SEANSU +
             ") VALUES(?,?,?)";
-
 
     public static final String GENERUJ_MIEJSCA =
             "INSERT INTO " + TABLE_MIEJSCA +
@@ -98,16 +95,31 @@ public class DatabaseConnector{
                     ", " + COLUMN_MIEJSCA_ID_SEANSU + ", " + COLUMN_MIEJSCA_NR_MIEJSCA + ", " + COLUMN_MIEJSCA_RZAD +
                     ") VALUES(?,?,?,?,?)";
 
+    public static final String UTWORZ_BILET =
+            "INSERT INTO " + TABLE_BILETY +
+                    " (" + COLUMN_BILETY_ID_SEANSU + ", " + COLUMN_BILETY_ID_FILMU + ", " + COLUMN_BILETY_ID_SALI + ", " +
+                    COLUMN_BILETY_ID_MIEJSCA + ", " + COLUMN_BILETY_ID_TRANSAKCJI + ", " + COLUMN_BILETY_TYP_BILETU +
+                    ") VALUES(?,?,?,?,?,?);";
+
+    public static final String UTWORZ_TRANSAKCJE =
+            "INSERT INTO " + TABLE_TRANSAKCJE + " (" + COLUMN_TRANSAKCJE_WARTOSC_TRANSAKCJI +
+                    ") VALUES(?);";
+
+
+
     private Connection connection;
     private PreparedStatement queryZajeteMiejsca;
     private PreparedStatement utworzSeans;
     private PreparedStatement generujMiejsca;
+    private PreparedStatement utworzTransakcje;
 
     public boolean open(){
         try{
-
             utworzSeans = connection.prepareStatement(UTWORZ_SEANS, Statement.RETURN_GENERATED_KEYS);
             generujMiejsca = connection.prepareStatement(GENERUJ_MIEJSCA, Statement.RETURN_GENERATED_KEYS);
+            queryZajeteMiejsca = connection.prepareStatement(QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE);
+            utworzTransakcje = connection.prepareStatement(UTWORZ_TRANSAKCJE, Statement.RETURN_GENERATED_KEYS);
+
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -116,12 +128,23 @@ public class DatabaseConnector{
     }
 
     public void close(){
-
         try{
+            if(connection != null){
+                connection.close();
+            }
             if(utworzSeans != null){
                 utworzSeans.close();
+            }
+            if(generujMiejsca != null){
                 generujMiejsca.close();
             }
+            if(queryZajeteMiejsca != null){
+                queryZajeteMiejsca.close();
+            }
+            if(utworzTransakcje != null){
+                utworzTransakcje.close();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -131,15 +154,12 @@ public class DatabaseConnector{
     public DatabaseConnector(){
         System.out.println(getClass().getResource("/resources/static/production.db"));
         try {
-
             //this.connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("/resources/static/production.db"));
 
             this.connection = DriverManager.getConnection("jdbc:sqlite:src/sample/resources/static/" + DB_NAME);
-
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
     }
 
     public List<Filmy> queryFilmy(){
@@ -164,6 +184,44 @@ public class DatabaseConnector{
             exe.printStackTrace();
             return null;
         }
+    }
+
+    public int utworzSeans(int idFilmu, int idSali, String dataSeansu) throws SQLException{
+
+        utworzSeans.setInt(1,idFilmu);
+        utworzSeans.setInt(2, idSali);
+        utworzSeans.setString(3, dataSeansu);
+
+        int affected = utworzSeans.executeUpdate();
+        if(affected != 1) {
+            throw new SQLException("Nie dodano seansu!");
+        }
+        ResultSet generatedKeys = utworzSeans.getGeneratedKeys();
+        if(generatedKeys.next()){
+            int idSeansu = generatedKeys.getInt(1);
+            generujMiejsca(idSali, idFilmu, idSeansu);
+            return idSeansu;
+        } else {
+            throw new SQLException("Nie mozna było zdobyć idSeansu!");
+        }
+    }
+
+
+    public int utworzTransakcje() throws SQLException{
+
+        utworzTransakcje.setInt(1, 0); //ustawienie wartosci transakcji na zero
+
+        int affected = utworzTransakcje.executeUpdate();
+        if(affected != 1){
+            throw new SQLException("Nie dodano transakcji!");
+        }
+        ResultSet generatedKeys = utworzTransakcje.getGeneratedKeys();
+        if(generatedKeys.next()){
+            int idTransakcji = generatedKeys.getInt(1);
+            return idTransakcji;
+        } else {
+            throw new SQLException("Nie wygenerowano idTransakcji");
+        }
 
     }
 
@@ -174,14 +232,12 @@ public class DatabaseConnector{
         System.out.println(QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE);
 
         try {
-            queryZajeteMiejsca = connection.prepareStatement(QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE);
             queryZajeteMiejsca.setInt(1, idSeansu);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         try(ResultSet resultSet = queryZajeteMiejsca.executeQuery()){
-
             while(resultSet.next()){
                 Miejsca miejsce = new Miejsca();
                 miejsce.setIdMiejsca(resultSet.getInt(INDEX_MIEJSCA_ID_MIEJSCA));
@@ -202,29 +258,6 @@ public class DatabaseConnector{
         }
     }
 
-    public int utworzSeans(int idFilmu, int idSali, String dataSeansu) throws SQLException{
-
-
-
-        utworzSeans.setInt(1,idFilmu);
-        utworzSeans.setInt(2, idSali);
-        utworzSeans.setString(3, dataSeansu);
-
-        int affected = utworzSeans.executeUpdate();
-        int idSeansu;
-        if(affected != 1) {
-            throw new SQLException("Nie dodano seansu!");
-        }
-        ResultSet generatedKeys = utworzSeans.getGeneratedKeys();
-        if(generatedKeys.next()){
-            idSeansu = generatedKeys.getInt(1);
-            generujMiejsca(idSali, idFilmu, idSeansu);
-            return idSeansu;
-        } else {
-            throw new SQLException("Nie mozna było zdobyć idSeansu!");
-        }
-    }
-
     public void generujMiejsca(int idSali, int idFilmu, int idSeansu){
 
         try {
@@ -241,7 +274,6 @@ public class DatabaseConnector{
                     i++;
                 }
             }
-
         } catch (SQLException exe){
             System.out.println("Zapytanie zakonczone niepowodzeniem: " + exe.getMessage());
         }
@@ -250,8 +282,4 @@ public class DatabaseConnector{
     public Connection getConnection(){
         return this.connection;
     }
-
-
-
-
 }

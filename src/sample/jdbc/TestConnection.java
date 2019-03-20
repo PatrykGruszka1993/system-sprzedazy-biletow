@@ -19,24 +19,14 @@ public class TestConnection {
 
         DatabaseConnector connector = new DatabaseConnector();
 
-        List<Miejsca> miejsca = connector.znajdzZajeteMiejsca(1);
-
-        for (Miejsca miejsce : miejsca ){
-            System.out.println(miejsce);
-        }
         try {
             connector.open();
-            connector.utworzSeans(4,1,"2019-04-11 22:00");
+            connector.utworzTransakcje();
             connector.close();
         } catch (SQLException exe){
             exe.printStackTrace();
         }
 
-        try {
-            connector.getConnection().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 }
