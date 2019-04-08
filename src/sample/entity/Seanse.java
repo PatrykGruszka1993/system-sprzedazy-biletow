@@ -6,19 +6,20 @@ import javafx.beans.property.SimpleStringProperty;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Seanse {
 
     private SimpleIntegerProperty idFilmu;
     private SimpleIntegerProperty idSali;
     private SimpleIntegerProperty idSeansu;
-    private DateFormat dataSeansu;
+    private Date dataSeansu;
 
     public Seanse() {
         this.idFilmu = new SimpleIntegerProperty();
         this.idSali = new SimpleIntegerProperty();
         this.idSeansu = new SimpleIntegerProperty();
-        this.dataSeansu = new SimpleDateFormat();
+        this.dataSeansu = new Date();
     }
 
     public int getIdFilmu() {
@@ -57,11 +58,18 @@ public class Seanse {
         this.idSeansu.set(idSeansu);
     }
 
-    public DateFormat getDataSeansu() {
+    public Date getDataSeansu() {
         return dataSeansu;
     }
 
-    public void setDataSeansu(DateFormat dataSeansu) {
+    public void setDataSeansu(Date dataSeansu) {
         this.dataSeansu = dataSeansu;
+    }
+
+    @Override
+    public String toString() {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        return format.format(dataSeansu);
     }
 }

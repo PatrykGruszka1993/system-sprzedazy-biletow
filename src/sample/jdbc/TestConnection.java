@@ -1,16 +1,8 @@
 package sample.jdbc;
 
-
-
 import sample.entity.Filmy;
-import sample.entity.Miejsca;
 
-import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestConnection {
@@ -21,9 +13,13 @@ public class TestConnection {
 
         try {
             connector.open();
-            connector.utworzTransakcje();
+            System.out.println("->>>>>>");
+            List<Filmy> filmy = connector.queryFilmy();
+            for(Filmy film : filmy){
+                System.out.println(film);
+            }
             connector.close();
-        } catch (SQLException exe){
+        } catch (Exception exe){
             exe.printStackTrace();
         }
 

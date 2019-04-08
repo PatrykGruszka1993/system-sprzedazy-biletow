@@ -6,6 +6,7 @@ import sample.entity.Miejsca;
 import sample.entity.Seanse;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,10 +80,16 @@ public class DatabaseConnector{
     public static final String QUERY_FILMY =
             "SELECT * FROM " + TABLE_FILMY;
 
+    public static final String QUERY_SEANSE_DLA_DANEGO_FILMU =
+            "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + "=?;";
+
     public static final String QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE =
            "SELECT * FROM " + TABLE_MIEJSCA +
                    " INNER JOIN " + TABLE_BILETY + " ON " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_MIEJSCA + " = " + TABLE_BILETY + "." + COLUMN_BILETY_ID_MIEJSCA +
             " WHERE " + TABLE_BILETY + "." + COLUMN_BILETY_ID_SEANSU +" =?;";
+
+    public static final String QUERY_MIEJSCA_W_DANYM_SEANSIE =
+            "SELECT * FROM " + TABLE_MIEJSCA + " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =?";
 
     public static final String UTWORZ_SEANS =
             "INSERT INTO " + TABLE_SEANSE +
@@ -107,11 +114,18 @@ public class DatabaseConnector{
 
 
 
+
     private Connection connection;
     private PreparedStatement queryZajeteMiejsca;
     private PreparedStatement utworzSeans;
     private PreparedStatement generujMiejsca;
     private PreparedStatement utworzTransakcje;
+    private PreparedStatement querySeanseDlaDanegoFilmu;
+
+
+
+    private static DatabaseConnector instance = new DatabaseConnector();
+
 
     public boolean open(){
         try{
@@ -119,6 +133,7 @@ public class DatabaseConnector{
             generujMiejsca = connection.prepareStatement(GENERUJ_MIEJSCA, Statement.RETURN_GENERATED_KEYS);
             queryZajeteMiejsca = connection.prepareStatement(QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE);
             utworzTransakcje = connection.prepareStatement(UTWORZ_TRANSAKCJE, Statement.RETURN_GENERATED_KEYS);
+            querySeanseDlaDanegoFilmu = connection.prepareStatement(QUERY_SEANSE_DLA_DANEGO_FILMU);
 
             return true;
         } catch (SQLException e) {
@@ -144,6 +159,9 @@ public class DatabaseConnector{
             if(utworzTransakcje != null){
                 utworzTransakcje.close();
             }
+            if(querySeanseDlaDanegoFilmu != null){
+                querySeanseDlaDanegoFilmu.close();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -165,10 +183,7 @@ public class DatabaseConnector{
     public List<Filmy> queryFilmy(){
         try(Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY_FILMY)){
-
             List<Filmy> filmy = new ArrayList<>();
-
-            System.out.println(QUERY_FILMY);
             while (resultSet.next()){
                 Filmy film = new Filmy();
                 film.setIdFilmu(resultSet.getInt(INDEX_FILMY_ID_FILMU));
@@ -186,7 +201,41 @@ public class DatabaseConnector{
         }
     }
 
-    public int utworzSeans(int idFilmu, int idSali, String dataSeansu) throws SQLException{
+    public List<Seanse> querySeansDlaDanegoFilmu(Filmy film){
+        List<Seanse> seanse = new ArrayList<>();
+        try {
+            querySeanseDlaDanegoFilmu.setInt(1, film.getIdFilmu());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try(ResultSet resultSet = querySeanseDlaDanegoFilmu.executeQuery()){
+            while(resultSet.next()){
+                Seanse seans = new Seanse();
+
+                seans.setIdSeansu(resultSet.getInt(INDEX_SEANSE_ID_SEANSU));
+                seans.setIdFilmu(resultSet.getInt(INDEX_SEANSE_ID_FILMU));
+                seans.setIdSali(resultSet.getInt(INDEX_SEANSE_ID_SALI));
+                String dataString = resultSet.getString(INDEX_SEANSE_DATA_SEANSU);
+
+                SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                try {
+                    seans.setDataSeansu(data.parse(dataString));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                seanse.add(seans);
+            }
+            return seanse;
+
+        } catch (SQLException exe){
+            System.out.println("Zapytanie zakonczone niepowodzeniem " + exe.getMessage());
+            exe.printStackTrace();
+            return null;
+        }
+    }
+
+  public int utworzSeans(int idFilmu, int idSali, String dataSeansu) throws SQLException{
 
         utworzSeans.setInt(1,idFilmu);
         utworzSeans.setInt(2, idSali);
@@ -207,8 +256,27 @@ public class DatabaseConnector{
     }
 
 
-    public int utworzTransakcje() throws SQLException{
+    private void generujMiejsca(int idSali, int idFilmu, int idSeansu){
+        try {
+            int i =1;
+            for(int j=1; j<=15 ;j++){
+                for(int k=1; k<=10; k++){
+                    generujMiejsca.setInt(1, idSali);
+                    generujMiejsca.setInt(2, idFilmu);
+                    generujMiejsca.setInt(3, idSeansu);
+                    generujMiejsca.setInt(4, j);
+                    generujMiejsca.setInt(5, k);
 
+                    generujMiejsca.executeUpdate();
+                    i++;
+                }
+            }
+        } catch (SQLException exe){
+            System.out.println("Zapytanie zakonczone niepowodzeniem: " + exe.getMessage());
+        }
+    }
+
+    public int utworzTransakcje() throws SQLException{
         utworzTransakcje.setInt(1, 0); //ustawienie wartosci transakcji na zero
 
         int affected = utworzTransakcje.executeUpdate();
@@ -220,9 +288,8 @@ public class DatabaseConnector{
             int idTransakcji = generatedKeys.getInt(1);
             return idTransakcji;
         } else {
-            throw new SQLException("Nie wygenerowano idTransakcji");
+            throw new SQLException("Nie wygenerowano idTransakcji!");
         }
-
     }
 
     public List<Miejsca> znajdzZajeteMiejsca(int idSeansu){
@@ -258,28 +325,12 @@ public class DatabaseConnector{
         }
     }
 
-    public void generujMiejsca(int idSali, int idFilmu, int idSeansu){
-
-        try {
-            int i =1;
-            for(int j=1; j<=15 ;j++){
-                for(int k=1; k<=10; k++){
-                    generujMiejsca.setInt(1, idSali);
-                    generujMiejsca.setInt(2, idFilmu);
-                    generujMiejsca.setInt(3, idSeansu);
-                    generujMiejsca.setInt(4, j);
-                    generujMiejsca.setInt(5, k);
-
-                    generujMiejsca.executeUpdate();
-                    i++;
-                }
-            }
-        } catch (SQLException exe){
-            System.out.println("Zapytanie zakonczone niepowodzeniem: " + exe.getMessage());
-        }
-    }
-
     public Connection getConnection(){
         return this.connection;
     }
+
+    public static DatabaseConnector getInstance() {
+        return instance;
+    }
+
 }
