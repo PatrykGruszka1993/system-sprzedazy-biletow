@@ -18,7 +18,7 @@ public class Main extends Application {
         Controller controller = loader.getController();
 
 
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("CineTic Dealer");
         primaryStage.setScene(new Scene(root, 1024,768));
         primaryStage.show();
     }
