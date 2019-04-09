@@ -285,8 +285,7 @@ public class DatabaseConnector{
         }
         ResultSet generatedKeys = utworzTransakcje.getGeneratedKeys();
         if(generatedKeys.next()){
-            int idTransakcji = generatedKeys.getInt(1);
-            return idTransakcji;
+            return generatedKeys.getInt(1);
         } else {
             throw new SQLException("Nie wygenerowano idTransakcji!");
         }
