@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class DatabaseConnector{
 
@@ -79,6 +80,9 @@ public class DatabaseConnector{
 
     public static final String QUERY_FILMY =
             "SELECT * FROM " + TABLE_FILMY;
+
+    private static final String QUERY_FILMY_NA_DATE =
+            "SELECT * FROM " + TABLE_FILMY + " WHERE " +  COLUMN_FILMY_ID_FILMU + " in (SELECT " + COLUMN_SEANSE_ID_FILMU + " FROM " + TABLE_SEANSE + " WHERE  date(" + COLUMN_SEASNE_DATA_SEANSU +") =?);";
 
     public static final String QUERY_SEANSE_DLA_DANEGO_FILMU =
             "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + "=?;";
@@ -181,6 +185,34 @@ public class DatabaseConnector{
     public List<Filmy> queryFilmy(){
         try(Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY_FILMY)){
+            List<Filmy> filmy = new ArrayList<>();
+            while (resultSet.next()){
+                Filmy film = new Filmy();
+                film.setIdFilmu(resultSet.getInt(INDEX_FILMY_ID_FILMU));
+                film.setCzasTrwania(resultSet.getString(INDEX_FILMY_CZAS_TRWANIA));
+                film.setOpis(resultSet.getString(INDEX_FILMY_OPIS));
+                film.setTytul(resultSet.getString(INDEX_FILMY_TYTUL));
+
+                filmy.add(film);
+            }
+            return filmy;
+        } catch (SQLException exe){
+            System.out.println("Zapytanie zakonczone niepowodzeniem: " + exe.getMessage());
+            exe.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Filmy> queryFilmyDlaDaty(Date data){
+        PreparedStatement statement = null;
+        try{
+            statement  = connection.prepareStatement(QUERY_FILMY_NA_DATE);
+            statement.setString(1, data.toString());
+        }catch (Exception e){
+            e.getMessage();
+        }
+
+        try(ResultSet resultSet = statement.executeQuery()){
             List<Filmy> filmy = new ArrayList<>();
             while (resultSet.next()){
                 Filmy film = new Filmy();

@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import java.util.Date;
+
 public class Controller implements Initializable {
 
     @FXML
@@ -27,6 +29,8 @@ public class Controller implements Initializable {
 
     @FXML
     private DatePicker calendarPicker;
+
+    private Date data;
 
 
     @Override
@@ -39,16 +43,23 @@ public class Controller implements Initializable {
     @FXML
     private void ustawDate(){
         calendarPicker.setValue(LocalDate.now());
-        LocalDate data = calendarPicker.getValue();
+        data =java.sql.Date.valueOf(calendarPicker.getValue());
+        calendarPicker.valueProperty().addListener((observable, oldValue, newValue) -> data =java.sql.Date.valueOf(calendarPicker.getValue()));
     }
 
     @FXML
     public void wczytajFilmy(){
-        List <Filmy> filmy = DatabaseConnector.getInstance().queryFilmy();
-        ObservableList<Filmy> obList = FXCollections.observableArrayList(filmy);
-        comboBoxFilm.getItems().addAll(obList);
-        comboBoxFilm.getSelectionModel().selectFirst();
-
+        calendarPicker.valueProperty().addListener((observable, oldValue, newValue) ->
+        {
+            comboBoxFilm.getItems().clear();
+            List<Filmy> filmy = DatabaseConnector.getInstance().queryFilmyDlaDaty(data);
+            if (newValue == null) {
+                comboBoxFilm.setDisable(true);
+            } else {
+                ObservableList<Filmy> obList = FXCollections.observableArrayList(filmy);
+                comboBoxFilm.getItems().addAll(obList);
+            }
+        });
     }
 
     @FXML
@@ -65,6 +76,8 @@ public class Controller implements Initializable {
             }
         });
     }
+
+
 
 
 }
