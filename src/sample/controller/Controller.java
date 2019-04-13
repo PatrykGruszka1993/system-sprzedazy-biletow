@@ -55,9 +55,7 @@ public class Controller implements Initializable {
                             public void updateItem(LocalDate item, boolean empty) {
                                 super.updateItem(item, empty);
 
-                                if (item.isBefore(
-                                        calendarPicker.getValue().plusDays(1))
-                                ) {
+                                if (item.isBefore(LocalDate.now())){
                                     setDisable(true);
                                     setStyle("-fx-background-color: #ffc0cb;");
                                 }
@@ -67,7 +65,8 @@ public class Controller implements Initializable {
                 };
         calendarPicker.setDayCellFactory(dayCellFactory);
         data =java.sql.Date.valueOf(calendarPicker.getValue());
-        calendarPicker.valueProperty().addListener((observable, oldValue, newValue) -> data =java.sql.Date.valueOf(calendarPicker.getValue()));
+        calendarPicker.valueProperty().addListener((observable, oldValue, newValue) ->
+                data =java.sql.Date.valueOf(calendarPicker.getValue()));
     }
 
     @FXML
