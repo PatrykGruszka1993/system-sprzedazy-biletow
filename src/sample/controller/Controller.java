@@ -5,8 +5,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.util.Callback;
+
 import sample.entity.Filmy;
 import sample.entity.Seanse;
 import sample.jdbc.DatabaseConnector;
@@ -43,6 +46,26 @@ public class Controller implements Initializable {
     @FXML
     private void ustawDate(){
         calendarPicker.setValue(LocalDate.now());
+        final Callback<DatePicker, DateCell> dayCellFactory =
+                new Callback<DatePicker, DateCell>() {
+                    @Override
+                    public DateCell call(final DatePicker datePicker) {
+                        return new DateCell() {
+                            @Override
+                            public void updateItem(LocalDate item, boolean empty) {
+                                super.updateItem(item, empty);
+
+                                if (item.isBefore(
+                                        calendarPicker.getValue().plusDays(1))
+                                ) {
+                                    setDisable(true);
+                                    setStyle("-fx-background-color: #ffc0cb;");
+                                }
+                            }
+                        };
+                    }
+                };
+        calendarPicker.setDayCellFactory(dayCellFactory);
         data =java.sql.Date.valueOf(calendarPicker.getValue());
         calendarPicker.valueProperty().addListener((observable, oldValue, newValue) -> data =java.sql.Date.valueOf(calendarPicker.getValue()));
     }
