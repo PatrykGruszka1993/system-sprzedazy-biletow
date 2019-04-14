@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -92,14 +93,10 @@ public class Controller implements Initializable {
                 comboBoxSeans.getItems().clear();
                 comboBoxSeans.setDisable(true);
             } else {
-                List<Seanse> seanse = DatabaseConnector.getInstance().querySeansDlaDanegoFilmu(newValue);
+                List<Seanse> seanse = DatabaseConnector.getInstance().querySeansDlaDanegoFilmu(newValue, data);
                 comboBoxSeans.getItems().setAll(seanse);
                 comboBoxSeans.setDisable(false);
             }
         });
     }
-
-
-
-
 }

@@ -85,7 +85,7 @@ public class DatabaseConnector{
             "SELECT * FROM " + TABLE_FILMY + " WHERE " +  COLUMN_FILMY_ID_FILMU + " in (SELECT " + COLUMN_SEANSE_ID_FILMU + " FROM " + TABLE_SEANSE + " WHERE  date(" + COLUMN_SEASNE_DATA_SEANSU +") =?);";
 
     public static final String QUERY_SEANSE_DLA_DANEGO_FILMU =
-            "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + "=?;";
+            "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + "=? AND date(" + COLUMN_SEASNE_DATA_SEANSU + ") =?;";
 
     public static final String QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE =
            "SELECT * FROM " + TABLE_MIEJSCA +
@@ -231,10 +231,11 @@ public class DatabaseConnector{
         }
     }
 
-    public List<Seanse> querySeansDlaDanegoFilmu(Filmy film){
+    public List<Seanse> querySeansDlaDanegoFilmu(Filmy film, Date dataSeansu){
         List<Seanse> seanse = new ArrayList<>();
         try {
             querySeanseDlaDanegoFilmu.setInt(1, film.getIdFilmu());
+            querySeanseDlaDanegoFilmu.setString(2, dataSeansu.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
