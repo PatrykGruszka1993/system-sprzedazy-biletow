@@ -52,7 +52,7 @@
             </AnchorPane>
           <AnchorPane layoutX="1.0" layoutY="69.0" minHeight="0.0" minWidth="0.0" prefHeight="675.0" prefWidth="773.0">
                <children>
-                  <GridPane alignment="CENTER" layoutX="50.0" layoutY="14.0" prefHeight="601.0" prefWidth="720.0">
+                  <GridPane fx:id="seat_grid" alignment="CENTER" layoutX="50.0" layoutY="14.0" prefHeight="601.0" prefWidth="720.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
