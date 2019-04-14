@@ -82,15 +82,18 @@ public class DatabaseConnector{
             "SELECT * FROM " + TABLE_FILMY;
 
     private static final String QUERY_FILMY_NA_DATE =
-            "SELECT * FROM " + TABLE_FILMY + " WHERE " +  COLUMN_FILMY_ID_FILMU + " in (SELECT " + COLUMN_SEANSE_ID_FILMU + " FROM " + TABLE_SEANSE + " WHERE  date(" + COLUMN_SEASNE_DATA_SEANSU +") =?);";
+            "SELECT * FROM " + TABLE_FILMY + " WHERE " +  COLUMN_FILMY_ID_FILMU + " in (SELECT " +
+                    COLUMN_SEANSE_ID_FILMU + " FROM " + TABLE_SEANSE + " WHERE  date(" +
+                    COLUMN_SEASNE_DATA_SEANSU +") =?);";
 
     public static final String QUERY_SEANSE_DLA_DANEGO_FILMU =
-            "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + "=?;";
+            "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU +
+                    "=? AND date(" + COLUMN_SEASNE_DATA_SEANSU + ") =?;";
 
     public static final String QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE =
-           "SELECT * FROM " + TABLE_MIEJSCA +
-                   " INNER JOIN " + TABLE_BILETY + " ON " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_MIEJSCA + " = " + TABLE_BILETY + "." + COLUMN_BILETY_ID_MIEJSCA +
-            " WHERE " + TABLE_BILETY + "." + COLUMN_BILETY_ID_SEANSU +" =?;";
+           "SELECT * FROM " + TABLE_MIEJSCA + " WHERE " + COLUMN_MIEJSCA_ID_MIEJSCA + " IN (SELECT " +
+                   COLUMN_BILETY_ID_MIEJSCA + " FROM " + TABLE_BILETY + " WHERE " + COLUMN_BILETY_ID_SEANSU +
+                   " =?);";
 
     public static final String QUERY_MIEJSCA_W_DANYM_SEANSIE =
             "SELECT * FROM " + TABLE_MIEJSCA + " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =?";
@@ -231,10 +234,11 @@ public class DatabaseConnector{
         }
     }
 
-    public List<Seanse> querySeansDlaDanegoFilmu(Filmy film){
+    public List<Seanse> querySeansDlaDanegoFilmu(Filmy film, Date dataSeansu){
         List<Seanse> seanse = new ArrayList<>();
         try {
             querySeanseDlaDanegoFilmu.setInt(1, film.getIdFilmu());
+            querySeanseDlaDanegoFilmu.setString(2, dataSeansu.toString());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -321,14 +325,11 @@ public class DatabaseConnector{
         }
     }
 
-    public List<Miejsca> znajdzZajeteMiejsca(int idSeansu){
-        //int idSeansu = seans.getIdSeansu();
+    public List<Miejsca> znajdzZajeteMiejsca(Seanse seans){
         List<Miejsca> miejsca = new ArrayList<>();
 
-        System.out.println(QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE);
-
         try {
-            queryZajeteMiejsca.setInt(1, idSeansu);
+            queryZajeteMiejsca.setInt(1, seans.getIdSeansu());
         } catch (SQLException e) {
             e.printStackTrace();
         }
