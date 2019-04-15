@@ -119,7 +119,19 @@ public class DatabaseConnector{
             "INSERT INTO " + TABLE_TRANSAKCJE + " (" + COLUMN_TRANSAKCJE_WARTOSC_TRANSAKCJI +
                     ") VALUES(?);";
 
+    /*
+    public static final String QUERY_ID_MIEJSCA =
+            "SELECT " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_MIEJSCA + " FROM " + TABLE_MIEJSCA +
+                    " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =? AND " +
+                    TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_NR_MIEJSCA + "=? AND " +
+                    TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_RZAD + "=?;";
+*/
 
+    public static final String QUERY_ID_MIEJSCA =
+            "SELECT * FROM " + TABLE_MIEJSCA +
+                    " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =? AND " +
+                    TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_NR_MIEJSCA + "=? AND " +
+                    TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_RZAD + "=?;";
 
 
     private Connection connection;
@@ -128,6 +140,7 @@ public class DatabaseConnector{
     private PreparedStatement generujMiejsca;
     private PreparedStatement utworzTransakcje;
     private PreparedStatement querySeanseDlaDanegoFilmu;
+    private PreparedStatement queryIdMiejsca;
 
 
 
@@ -141,6 +154,7 @@ public class DatabaseConnector{
             queryZajeteMiejsca = connection.prepareStatement(QUERY_ZAJETE_MIEJSCA_W_DANYM_SEANSIE);
             utworzTransakcje = connection.prepareStatement(UTWORZ_TRANSAKCJE, Statement.RETURN_GENERATED_KEYS);
             querySeanseDlaDanegoFilmu = connection.prepareStatement(QUERY_SEANSE_DLA_DANEGO_FILMU);
+            queryIdMiejsca = connection.prepareStatement(QUERY_ID_MIEJSCA, Statement.RETURN_GENERATED_KEYS);
 
             return true;
         } catch (SQLException e) {
@@ -354,6 +368,38 @@ public class DatabaseConnector{
             return null;
         }
     }
+
+    public Miejsca znajdzMiejsce(Seanse seans, int nrMiejsca, int rzad){
+
+        Miejsca miejsce = new Miejsca();
+
+        try {
+            queryIdMiejsca.setInt(1, seans.getIdSeansu());
+            queryIdMiejsca.setInt(2, nrMiejsca);
+            queryIdMiejsca.setInt(3, rzad);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try(ResultSet resultSet = queryIdMiejsca.executeQuery()){
+            while(resultSet.next()){
+                miejsce.setIdMiejsca(resultSet.getInt(INDEX_MIEJSCA_ID_MIEJSCA));
+                miejsce.setIdSali(resultSet.getInt(INDEX_MIEJSCA_ID_SALI));
+                miejsce.setIdFilmu(resultSet.getInt(INDEX_MIEJSCA_ID_FILMU));
+                miejsce.setIdSeansu(resultSet.getInt(INDEX_MIEJSCA_ID_SEASNU));
+                miejsce.setNrMiejsca(resultSet.getInt(INDEX_MIEJSCA_NR_MIEJESA));
+                miejsce.setRzad(resultSet.getInt(INDEX_MIEJSCA_RZAD));
+
+            }
+            return miejsce;
+
+        } catch (SQLException exe){
+            System.out.println("Zapytanie zakonczone niepowodzeniem " + exe.getMessage());
+            exe.printStackTrace();
+            return null;
+        }
+    }
+
 
     public Connection getConnection(){
         return this.connection;

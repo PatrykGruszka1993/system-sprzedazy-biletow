@@ -21,6 +21,8 @@ public class Miejsca {
         this.rzad = new SimpleIntegerProperty();
     }
 
+
+
     public int getIdMiejsca() {
         return idMiejsca.get();
     }

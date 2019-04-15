@@ -3,6 +3,7 @@ package sample.controller;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -10,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
@@ -41,8 +44,11 @@ public class Controller implements Initializable {
     private DatePicker calendarPicker;
 
     private Date data;
+    List <Miejsca> zaznaczoneMiejsca;
 
+    @FXML
     private Button seat;
+
 
 
     @Override
@@ -51,6 +57,8 @@ public class Controller implements Initializable {
         wczytajFilmy();
         wczytajSeans();
         wczytajMiejsca();
+        zaznaczoneMiejsca = new ArrayList<>();
+        disableAllButtons(seat_grid);
     }
 
     @FXML
@@ -112,14 +120,34 @@ public class Controller implements Initializable {
     @FXML
     private void wczytajMiejsca(){
         comboBoxSeans.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(comboBoxSeans.getSelectionModel().isEmpty()){
+                disableAllButtons(seat_grid);
+            } else{
+                enableAllButtons(seat_grid);
                 if(newValue != null){
                     List<Miejsca> miejsca = DatabaseConnector.getInstance().znajdzZajeteMiejsca(newValue);
                     miejsca.forEach(miejsce->{
                         seat = getButtonFromGrid(seat_grid, miejsce);
                         seat.setDisable(true);
-                            });
+                    });
                 }
-                });
+
+            }
+        });
+    }
+
+    private void disableAllButtons(GridPane grid) {
+        for (Node child : grid.getChildren()){
+            seat = (Button) child;
+            seat.setDisable(true);
+        }
+    }
+
+    private void enableAllButtons (GridPane grid){
+        for (Node child : grid.getChildren()){
+            seat = (Button) child;
+            seat.setDisable(false);
+        }
     }
 
     private Button getButtonFromGrid (GridPane grid, Miejsca miejsce){
@@ -129,4 +157,42 @@ public class Controller implements Initializable {
         }
         return null;
     }
+
+    @FXML
+    public void zajmijMiejsce(ActionEvent actionEvent) {
+
+        seat = ((Button) actionEvent.getSource());
+        String id = seat.getId();
+
+        int rzad = Integer.parseInt(id.substring(5,7));
+        int nrMiejsca = Integer.parseInt(id.substring(8,10));
+
+        Seanse wybranySeans = comboBoxSeans.valueProperty().get();
+
+        Miejsca zaznaczoneMiejsce = DatabaseConnector.getInstance().znajdzMiejsce(wybranySeans, nrMiejsca, rzad);
+
+        for(Miejsca miejsce : zaznaczoneMiejsca){
+            if(zaznaczoneMiejsce.getIdMiejsca() == miejsce.getIdMiejsca()){
+                zaznaczoneMiejsca.remove(miejsce);
+                seat.setStyle("-fx-background-color: red");
+
+                for(Miejsca miejscewybrane :zaznaczoneMiejsca){
+                    System.out.println(miejscewybrane);
+                }
+                System.out.println("-------------------------------------------------------------");
+                return;
+            }
+        }
+
+        zaznaczoneMiejsca.add(zaznaczoneMiejsce);
+
+        for(Miejsca miejscewybrane :zaznaczoneMiejsca){
+            System.out.println(miejscewybrane);
+            seat.setStyle("-fx-background-color: green");
+        }
+        System.out.println("-------------------------------------------------------------");
+
+    }
+
+
 }
