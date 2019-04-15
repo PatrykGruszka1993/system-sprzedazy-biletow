@@ -1,0 +1,11 @@
+.button-unchecked {-fx-background-color:
+        white,
+        linear-gradient(#fafdfe, rgba(243, 249, 249, 0.76)),
+        linear-gradient(#ffffff 0%, #eeeeee 49%, #bdbdbd 50%, rgba(135, 135, 135, 0.9) 100%);
+}
+
+.button-checked {-fx-background-color:
+        #008200,
+        linear-gradient(#008200, rgba(243, 249, 249, 0.76)),
+        linear-gradient(#008200 0%, rgba(0, 181, 0, 0.79) 49%, rgba(0, 232, 0, 0.82) 50%, rgba(135, 135, 135, 0.9) 100%);
+}

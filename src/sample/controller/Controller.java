@@ -120,6 +120,7 @@ public class Controller implements Initializable {
     @FXML
     private void wczytajMiejsca(){
         comboBoxSeans.valueProperty().addListener((observable, oldValue, newValue) -> {
+            wyczyscMiejsca(seat_grid);
             if(comboBoxSeans.getSelectionModel().isEmpty()){
                 disableAllButtons(seat_grid);
             } else{
@@ -134,6 +135,15 @@ public class Controller implements Initializable {
 
             }
         });
+    }
+
+    private void wyczyscMiejsca(GridPane grid){
+        for (Node child : grid.getChildren()){
+            seat = (Button) child;
+            seat.getStyleClass().remove("button-checked");
+            seat.getStyleClass().add("button-unchecked");
+            zaznaczoneMiejsca.clear();
+        }
     }
 
     private void disableAllButtons(GridPane grid) {
@@ -163,10 +173,8 @@ public class Controller implements Initializable {
 
         seat = ((Button) actionEvent.getSource());
         String id = seat.getId();
-
         int rzad = Integer.parseInt(id.substring(5,7));
         int nrMiejsca = Integer.parseInt(id.substring(8,10));
-
         Seanse wybranySeans = comboBoxSeans.valueProperty().get();
 
         Miejsca zaznaczoneMiejsce = DatabaseConnector.getInstance().znajdzMiejsce(wybranySeans, nrMiejsca, rzad);
@@ -174,25 +182,13 @@ public class Controller implements Initializable {
         for(Miejsca miejsce : zaznaczoneMiejsca){
             if(zaznaczoneMiejsce.getIdMiejsca() == miejsce.getIdMiejsca()){
                 zaznaczoneMiejsca.remove(miejsce);
-                seat.setStyle("-fx-background-color: red");
-
-                for(Miejsca miejscewybrane :zaznaczoneMiejsca){
-                    System.out.println(miejscewybrane);
-                }
-                System.out.println("-------------------------------------------------------------");
+                seat.getStyleClass().remove("button-checked");
+                seat.getStyleClass().add("button-unchecked");
                 return;
             }
         }
 
         zaznaczoneMiejsca.add(zaznaczoneMiejsce);
-
-        for(Miejsca miejscewybrane :zaznaczoneMiejsca){
-            System.out.println(miejscewybrane);
-            seat.setStyle("-fx-background-color: green");
-        }
-        System.out.println("-------------------------------------------------------------");
-
+        seat.getStyleClass().add("button-checked");
     }
-
-
 }
