@@ -1,6 +1,5 @@
 package sample.controller;
 
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,8 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
@@ -44,15 +41,14 @@ public class Controller implements Initializable {
     private DatePicker calendarPicker;
 
     private Date data;
-    List <Miejsca> zaznaczoneMiejsca;
+    private List <Miejsca> zaznaczoneMiejsca;
 
     @FXML
     private Button seat;
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         ustawDate();
         wczytajFilmy();
         wczytajSeans();
