@@ -11,18 +11,26 @@ import sample.jdbc.DatabaseConnector;
 
 public class Main extends Application {
 
+    // Aby móc pobrać primaryStage w oknie otwieranym z poziomu kontrolera
+    //utworzono zmienną i funkcję statyczną
+
+    private static Stage ps;
+
+    public static Stage getPrimaryStage(){
+        return ps;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
-        Controller controller = loader.getController();
+        ps = primaryStage;
 
 
         primaryStage.setTitle("CineTic Dealer");
         primaryStage.setScene(new Scene(root, 1024,768));
         primaryStage.show();
     }
-
 
     @Override
     public void init() throws Exception {

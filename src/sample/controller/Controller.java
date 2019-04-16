@@ -4,20 +4,26 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import sample.Main;
 import sample.entity.Filmy;
 import sample.entity.Miejsca;
 import sample.entity.Seanse;
 import sample.jdbc.DatabaseConnector;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,6 +52,9 @@ public class Controller implements Initializable {
     @FXML
     private Button seat;
 
+    @FXML
+    private Button ticket_seller;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -55,6 +64,22 @@ public class Controller implements Initializable {
         wczytajMiejsca();
         zaznaczoneMiejsca = new ArrayList<>();
         disableAllButtons(seat_grid);
+
+        ticket_seller.setOnAction((event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/bilety_view.fxml"));
+                Stage stage = new Stage();
+                stage.setTitle("Sprzedaż biletów");
+                stage.setScene(new Scene(loader.load(),400,400));
+                //zablokowanie okna-rodzica
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.initOwner(Main.getPrimaryStage());
+
+                stage.show();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }));
     }
 
     @FXML
@@ -187,4 +212,6 @@ public class Controller implements Initializable {
         zaznaczoneMiejsca.add(zaznaczoneMiejsce);
         seat.getStyleClass().add("button-checked");
     }
+
+
 }
