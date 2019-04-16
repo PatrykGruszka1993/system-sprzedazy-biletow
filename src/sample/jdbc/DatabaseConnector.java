@@ -307,13 +307,13 @@ public class DatabaseConnector{
     private void generujMiejsca(int idSali, int idFilmu, int idSeansu){
         try {
             int i =1;
-            for(int j=1; j<=15 ;j++){
-                for(int k=1; k<=10; k++){
+            for(int j=1; j<=10 ;j++){
+                for(int k=1; k<=15; k++){
                     generujMiejsca.setInt(1, idSali);
                     generujMiejsca.setInt(2, idFilmu);
                     generujMiejsca.setInt(3, idSeansu);
-                    generujMiejsca.setInt(4, j);
-                    generujMiejsca.setInt(5, k);
+                    generujMiejsca.setInt(4, k);
+                    generujMiejsca.setInt(5, j);
 
                     generujMiejsca.executeUpdate();
                     i++;
