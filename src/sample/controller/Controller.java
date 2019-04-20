@@ -18,19 +18,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import sample.Main;
-import sample.entity.Filmy;
-import sample.entity.Miejsca;
-import sample.entity.Seanse;
+import sample.entity.*;
 import sample.jdbc.DatabaseConnector;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import java.util.Date;
+import java.util.*;
 
 public class Controller implements Initializable {
 
@@ -68,6 +62,9 @@ public class Controller implements Initializable {
         ticket_seller.setOnAction((event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/bilety_view.fxml"));
+                Transakcje transakcja = przygotujTransakcje();
+                List <Bilety> wybraneBilety = przygotujBilety(transakcja);
+
                 Stage stage = new Stage();
                 stage.setTitle("Sprzedaż biletów");
                 stage.setScene(new Scene(loader.load(),400,400));
@@ -213,5 +210,35 @@ public class Controller implements Initializable {
         seat.getStyleClass().add("button-checked");
     }
 
+    private Transakcje przygotujTransakcje(){
 
+        Transakcje nowaTransakcja = new Transakcje();
+        nowaTransakcja.setWartoscTransakcji(0);
+        nowaTransakcja.setIdTransakcji(DatabaseConnector.getInstance().idDlaNowejTransakcji());
+
+        return nowaTransakcja;
+    }
+
+    private List <Bilety> przygotujBilety(Transakcje transakcja){
+        if(zaznaczoneMiejsca.isEmpty()){
+            return Collections.emptyList();
+        }else{
+            List <Bilety> przygotowaneBilety = new ArrayList<>();
+            int następneIDBiletu = DatabaseConnector.getInstance().idDlaNowegoBiletu();
+            for (Miejsca miejsce: zaznaczoneMiejsca) {
+                Bilety bilet = new Bilety();
+                bilet.setIdFilmu(miejsce.getIdFilmu());
+                bilet.setIdMiejsca(miejsce.getIdMiejsca());
+                bilet.setIdSali(miejsce.getIdSali());
+                bilet.setIdSeansu(miejsce.getIdSeansu());
+                bilet.setIdTransakcji(transakcja.getIdTransakcji());
+                bilet.setTypBiletu("1");
+                bilet.setIdBiletu(następneIDBiletu);
+                następneIDBiletu++;
+                przygotowaneBilety.add(bilet);
+            }
+
+            return przygotowaneBilety;
+        }
+    }
 }
