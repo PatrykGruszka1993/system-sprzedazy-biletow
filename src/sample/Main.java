@@ -28,6 +28,7 @@ public class Main extends Application {
 
 
         primaryStage.setTitle("CineTic Dealer");
+        primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root, 1024,768));
         primaryStage.show();
     }

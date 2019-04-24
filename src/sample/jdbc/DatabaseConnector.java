@@ -400,6 +400,36 @@ public class DatabaseConnector{
         }
     }
 
+    public int idDlaNowejTransakcji(){
+        String query = "SELECT MAX(id_transakcji) FROM Transakcje;";
+        int noweId = -1;
+
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            ResultSet resultSet = stm.executeQuery();
+            noweId = resultSet.getInt(INDEX_TRANSAKCJE_ID_TRANSAKCJI) + 1;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return noweId;
+    }
+
+    public int idDlaNowegoBiletu(){
+        String query = "SELECT MAX(id_biletu) FROM Bilety;";
+        int noweId = -1;
+
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            ResultSet resultSet = stm.executeQuery();
+            noweId = resultSet.getInt(INDEX_BILETY_ID_BILETU) + 1;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return noweId;
+    }
+
 
     public Connection getConnection(){
         return this.connection;
