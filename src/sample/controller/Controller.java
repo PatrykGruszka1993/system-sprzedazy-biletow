@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
@@ -64,15 +65,27 @@ public class Controller implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/bilety_view.fxml"));
                 Transakcje transakcja = przygotujTransakcje();
                 List <Bilety> wybraneBilety = przygotujBilety(transakcja);
+                Parent root = loader.load();
+
+                BiletyController ctrl = loader.getController();
+
+                ctrl.setFilm(comboBoxFilm.getValue());
+                ctrl.setSeans(comboBoxSeans.getValue());
+                ctrl.setTransakcja(transakcja);
+                ctrl.setMiejsca(zaznaczoneMiejsca);
+                ctrl.setBilety(wybraneBilety);
+
+                ctrl.przygotujWidok();
 
                 Stage stage = new Stage();
                 stage.setTitle("Sprzedaż biletów");
-                stage.setScene(new Scene(loader.load(),400,400));
+                stage.setScene(new Scene(root,480,400));
                 //zablokowanie okna-rodzica
                 stage.initModality(Modality.WINDOW_MODAL);
                 stage.initOwner(Main.getPrimaryStage());
 
                 stage.show();
+                stage.setResizable(false);
             }catch (IOException e){
                 e.printStackTrace();
             }
