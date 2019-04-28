@@ -80,7 +80,8 @@ public class BiletyController implements Initializable {
     public void przygotujWidok(){
 
         // 0. Przygotowanie zmiennej przechowującej aktualną wartość transakcji.
-        wartośćTransakcji = new SimpleIntegerProperty(20 * this.bilety.size());
+
+        transakcja.setWartoscTransakcji(20 * this.bilety.size());
 
         // 1. Przygotowanie etykiety tytułowej z tytułem filmu, datą seansu i nr sali.
         Label tytułFilmu = new Label("Film: " + film.getTytul());
@@ -119,9 +120,9 @@ public class BiletyController implements Initializable {
             typBiletuCombo.getSelectionModel().select(0);
             typBiletuCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if(newValue == "Ulgowy")
-                    wartośćTransakcji.set(wartośćTransakcji.getValue() - 5);
+                    transakcja.setWartoscTransakcji(transakcja.getWartoscTransakcji() - 5);
                 else
-                    wartośćTransakcji.set(wartośćTransakcji.getValue() + 5);
+                    transakcja.setWartoscTransakcji(transakcja.getWartoscTransakcji() + 5);
             });
             biletyGrid.add(typBiletuCombo, 2, 4 + offset);
 
@@ -132,8 +133,8 @@ public class BiletyController implements Initializable {
         // 3. Przygotowanie sekcji z podsumowaniem transakcji. Etykieta z aktualną kwotą.
         Label transakcjaTekst = new Label("Wartość transakcji: ");
         biletyGrid.add(transakcjaTekst, 1, 4 + offset);
-        Label wartośćTransakcjiEtykieta = new Label( wartośćTransakcji.getValue().toString() + ",00 zł");
-        wartośćTransakcji.addListener((observable, oldValue, newValue) -> {
+        Label wartośćTransakcjiEtykieta = new Label( transakcja.getWartoscTransakcji() + ",00 zł");
+        transakcja.wartoscTransakcjiProperty().addListener((observable, oldValue, newValue) -> {
             wartośćTransakcjiEtykieta.textProperty().setValue(newValue.toString() + ",00 zł");
         });
         biletyGrid.add(wartośćTransakcjiEtykieta, 2,4 + offset);
