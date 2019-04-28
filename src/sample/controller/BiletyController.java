@@ -1,13 +1,11 @@
 package sample.controller;
 
-import com.sun.rowset.internal.Row;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import sample.entity.*;
@@ -16,6 +14,7 @@ import sample.entity.*;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class BiletyController implements Initializable {
@@ -28,8 +27,6 @@ public class BiletyController implements Initializable {
     private List <Miejsca> miejsca;
     private Seanse seans;
     private Filmy film;
-
-    private SimpleIntegerProperty wartośćTransakcji;
 
     public Transakcje getTransakcja() {
         return transakcja;
@@ -138,5 +135,25 @@ public class BiletyController implements Initializable {
             wartośćTransakcjiEtykieta.textProperty().setValue(newValue.toString() + ",00 zł");
         });
         biletyGrid.add(wartośćTransakcjiEtykieta, 2,4 + offset);
+
+        // 4. Przycisk "Potwierdź transakcję".
+
+        Button potwierdźTransakcję = new Button("Potwierdź transakcję");
+        potwierdźTransakcję.setOnAction(event -> {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Potwierdzenie transakcji");
+                    alert.setHeaderText(null);
+                    alert.setGraphic(null);
+                    alert.setContentText("Czy na pewno przyjąć transakcję?");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK){
+
+                    } else {
+
+                    }
+                }
+                );
+        biletyGrid.add(potwierdźTransakcję, 2, 4 + offset +1);
     }
 }
