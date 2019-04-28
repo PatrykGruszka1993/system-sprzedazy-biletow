@@ -1,6 +1,7 @@
 package sample.controller;
 
 import com.sun.rowset.internal.Row;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,6 +28,8 @@ public class BiletyController implements Initializable {
     private List <Miejsca> miejsca;
     private Seanse seans;
     private Filmy film;
+
+    private SimpleIntegerProperty wartośćTransakcji;
 
     public Transakcje getTransakcja() {
         return transakcja;
@@ -75,6 +78,10 @@ public class BiletyController implements Initializable {
     }
 
     public void przygotujWidok(){
+
+        // 0. Przygotowanie zmiennej przechowującej aktualną wartość transakcji.
+        wartośćTransakcji = new SimpleIntegerProperty(20 * this.bilety.size());
+
         // 1. Przygotowanie etykiety tytułowej z tytułem filmu, datą seansu i nr sali.
         Label tytułFilmu = new Label("Film: " + film.getTytul());
         biletyGrid.add(tytułFilmu,1,1, 2, 1);
@@ -110,13 +117,25 @@ public class BiletyController implements Initializable {
             ObservableList <String> typyBiletów = FXCollections.observableArrayList("Normalny", "Ulgowy");
             final ComboBox typBiletuCombo = new ComboBox(typyBiletów);
             typBiletuCombo.getSelectionModel().select(0);
+            typBiletuCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if(newValue == "Ulgowy")
+                    wartośćTransakcji.set(wartośćTransakcji.getValue() - 5);
+                else
+                    wartośćTransakcji.set(wartośćTransakcji.getValue() + 5);
+            });
             biletyGrid.add(typBiletuCombo, 2, 4 + offset);
 
             offset++;
 
         }
 
-
         // 3. Przygotowanie sekcji z podsumowaniem transakcji. Etykieta z aktualną kwotą.
+        Label transakcjaTekst = new Label("Wartość transakcji: ");
+        biletyGrid.add(transakcjaTekst, 1, 4 + offset);
+        Label wartośćTransakcjiEtykieta = new Label( wartośćTransakcji.getValue().toString() + ",00 zł");
+        wartośćTransakcji.addListener((observable, oldValue, newValue) -> {
+            wartośćTransakcjiEtykieta.textProperty().setValue(newValue.toString() + ",00 zł");
+        });
+        biletyGrid.add(wartośćTransakcjiEtykieta, 2,4 + offset);
     }
 }
