@@ -3,6 +3,7 @@ package sample.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +17,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 import sample.Main;
@@ -83,6 +85,16 @@ public class Controller implements Initializable {
                 //zablokowanie okna-rodzica
                 stage.initModality(Modality.WINDOW_MODAL);
                 stage.initOwner(Main.getPrimaryStage());
+                stage.setOnHidden(new EventHandler<WindowEvent>() {
+                    public void handle(WindowEvent we) {
+                        ustawDate();
+                        wczytajFilmy();
+                        wczytajSeans();
+                        wczytajMiejsca();
+                        zaznaczoneMiejsca = new ArrayList<>();
+                        disableAllButtons(seat_grid);
+                    }
+                });
 
                 stage.show();
                 stage.setResizable(false);

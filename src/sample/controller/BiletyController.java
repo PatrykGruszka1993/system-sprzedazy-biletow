@@ -8,7 +8,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
 import sample.entity.*;
+import sample.jdbc.DatabaseConnector;
 
 
 import java.net.URL;
@@ -116,10 +118,14 @@ public class BiletyController implements Initializable {
             final ComboBox typBiletuCombo = new ComboBox(typyBiletów);
             typBiletuCombo.getSelectionModel().select(0);
             typBiletuCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if(newValue == "Ulgowy")
+                if(newValue == "Ulgowy") {
                     transakcja.setWartoscTransakcji(transakcja.getWartoscTransakcji() - 5);
-                else
+                    b.setTypBiletu("2");
+                }
+                else {
                     transakcja.setWartoscTransakcji(transakcja.getWartoscTransakcji() + 5);
+                    b.setTypBiletu("1");
+                }
             });
             biletyGrid.add(typBiletuCombo, 2, 4 + offset);
 
@@ -148,12 +154,38 @@ public class BiletyController implements Initializable {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == ButtonType.OK){
-
+                        wprowadźDaneDoBazy();
+                        potwierdźWprowadzenieDanychDoBazy();
+                        Stage stage = (Stage) potwierdźTransakcję.getScene().getWindow();
+                        stage.close();
                     } else {
 
                     }
                 }
                 );
         biletyGrid.add(potwierdźTransakcję, 2, 4 + offset +1);
+    }
+
+    private void wprowadźDaneDoBazy(){
+        wprowadźTransakcję();
+        wprowadźBilety();
+    }
+
+    private void wprowadźTransakcję(){
+        DatabaseConnector.getInstance().insertTransakcja(transakcja);
+    }
+    private void wprowadźBilety(){
+        for (Bilety bilet: bilety
+             ) {
+            DatabaseConnector.getInstance().insertBilet(bilet);
+        }
+    }
+    private void potwierdźWprowadzenieDanychDoBazy(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Potwierdzenie");
+        alert.setHeaderText(null);
+        alert.setContentText("Wprowadzanie zakończone.");
+
+        alert.showAndWait();
     }
 }
