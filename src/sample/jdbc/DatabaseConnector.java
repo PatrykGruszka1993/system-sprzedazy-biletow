@@ -1,9 +1,6 @@
 package sample.jdbc;
 
-import sample.entity.Bilety;
-import sample.entity.Filmy;
-import sample.entity.Miejsca;
-import sample.entity.Seanse;
+import sample.entity.*;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -439,4 +436,37 @@ public class DatabaseConnector{
         return instance;
     }
 
+    public void insertTransakcja(Transakcje transakcja) {
+        String query = "INSERT INTO TRANSAKCJE (id_transakcji, wartosc_transakcji) VALUES (? , ?);";
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, transakcja.getIdTransakcji());
+            stm.setInt(2, transakcja.getWartoscTransakcji());
+
+            stm.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void insertBilet(Bilety bilet) {
+        String query = "INSERT INTO BILETY (id_biletu, id_filmu, id_miejsca, id_sali, id_seansu, id_transakcji, typ_biletu) VALUES (?, ?, ?, ?, ?, ?, ?);";
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, bilet.getIdBiletu());
+            stm.setInt(2, bilet.getIdFilmu());
+            stm.setInt(3,bilet.getIdMiejsca());
+            stm.setInt(4, bilet.getIdSali());
+            stm.setInt(5, bilet.getIdSeansu());
+            stm.setInt(6, bilet.getIdTransakcji());
+            stm.setInt(7, Integer.parseInt(bilet.getTypBiletu()));
+
+            stm.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
