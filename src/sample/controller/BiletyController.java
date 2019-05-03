@@ -30,6 +30,8 @@ public class BiletyController implements Initializable {
     private Seanse seans;
     private Filmy film;
 
+    private BiletPrinter bp;
+
     public Transakcje getTransakcja() {
         return transakcja;
     }
@@ -156,6 +158,8 @@ public class BiletyController implements Initializable {
                     if (result.get() == ButtonType.OK){
                         wprowadźDaneDoBazy();
                         potwierdźWprowadzenieDanychDoBazy();
+                        bp = new BiletPrinter(przygotujDaneDoDruku());
+                        bp.run();
                         Stage stage = (Stage) potwierdźTransakcję.getScene().getWindow();
                         stage.close();
                     } else {
@@ -187,5 +191,16 @@ public class BiletyController implements Initializable {
         alert.setContentText("Wprowadzanie zakończone.");
 
         alert.showAndWait();
+    }
+    private PDFDataModel przygotujDaneDoDruku(){
+        PDFDataModel model = new PDFDataModel();
+
+        model.transakcja = this.transakcja;
+        model.bilety = this.bilety;
+        model.film = this.film;
+        model.miejsca = this.miejsca;
+        model.seans = this.seans;
+
+        return model;
     }
 }
