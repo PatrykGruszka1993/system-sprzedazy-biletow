@@ -16,14 +16,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
 
 <AnchorPane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.Controller">
    <children>
+      <fx:define>
+         <ToggleGroup fx:id="FileMenuToggleGroup"/>
+      </fx:define>
       <MenuBar layoutY="2.0" prefHeight="19.0" prefWidth="1024.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+               <RadioMenuItem mnemonicParsing="false" text="Sprzedaż biletów" selected="true" toggleGroup="$FileMenuToggleGroup"/>
+               <RadioMenuItem fx:id="transactionViewMenuItem" mnemonicParsing="false" text="Przegląd transakcji" toggleGroup="$FileMenuToggleGroup"/>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

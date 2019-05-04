@@ -10,10 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,6 +48,9 @@ public class Controller implements Initializable {
 
     @FXML
     private Button ticket_seller;
+
+    @FXML
+    private RadioMenuItem transactionViewMenuItem;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -102,6 +102,19 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         }));
+
+        transactionViewMenuItem.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/transakcje_view.fxml"));
+                Parent root = loader.load();
+
+                Main.getPrimaryStage().setScene(new Scene(root));
+                Main.getPrimaryStage().show();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
     }
 
     @FXML
