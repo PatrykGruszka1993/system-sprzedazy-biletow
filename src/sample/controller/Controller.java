@@ -10,10 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,6 +30,9 @@ public class Controller implements Initializable {
 
     @FXML
     private GridPane seat_grid;
+
+    @FXML
+    private MenuItem lista_filmow;
 
     @FXML
     private ComboBox<Filmy> comboBoxFilm;
@@ -102,6 +102,8 @@ public class Controller implements Initializable {
                 e.printStackTrace();
             }
         }));
+
+
     }
 
     @FXML
@@ -265,5 +267,31 @@ public class Controller implements Initializable {
 
             return przygotowaneBilety;
         }
+    }
+
+
+    public void otworzPanelFilmy(ActionEvent actionEvent) {
+
+
+        try{
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/lista_filmow_view.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Lista filmów");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
