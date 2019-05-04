@@ -116,19 +116,22 @@ public class DatabaseConnector{
             "INSERT INTO " + TABLE_TRANSAKCJE + " (" + COLUMN_TRANSAKCJE_WARTOSC_TRANSAKCJI +
                     ") VALUES(?);";
 
-    /*
-    public static final String QUERY_ID_MIEJSCA =
-            "SELECT " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_MIEJSCA + " FROM " + TABLE_MIEJSCA +
-                    " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =? AND " +
-                    TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_NR_MIEJSCA + "=? AND " +
-                    TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_RZAD + "=?;";
-*/
+    public static final String UTWORZ_FILM =
+            "INSERT INTO " + TABLE_FILMY +
+                    "(" + COLUMN_FILMY_TYTUL + ", " + COLUMN_FILMY_CZAS_TRWANIA + ", " + COLUMN_FILMY_OPIS +
+                    ") VALUES(?,?,?);";
 
     public static final String QUERY_ID_MIEJSCA =
             "SELECT * FROM " + TABLE_MIEJSCA +
                     " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =? AND " +
                     TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_NR_MIEJSCA + "=? AND " +
                     TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_RZAD + "=?;";
+
+    public static final String USUN_FILM =
+            "DELETE FROM " + TABLE_FILMY + " WHERE " + TABLE_FILMY + "." + COLUMN_FILMY_ID_FILMU + " =?";
+
+    public static final String USUN_SEANS_DLA_DANEGO_FILMU =
+            "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_MIEJSCA_ID_FILMU + " =?";
 
 
     private Connection connection;
@@ -138,7 +141,9 @@ public class DatabaseConnector{
     private PreparedStatement utworzTransakcje;
     private PreparedStatement querySeanseDlaDanegoFilmu;
     private PreparedStatement queryIdMiejsca;
-
+    private PreparedStatement utworzFilm;
+    private PreparedStatement usunFilm;
+    private PreparedStatement usunSeansDlaDanegoFilmu;
 
 
     private static DatabaseConnector instance = new DatabaseConnector();
@@ -152,6 +157,9 @@ public class DatabaseConnector{
             utworzTransakcje = connection.prepareStatement(UTWORZ_TRANSAKCJE, Statement.RETURN_GENERATED_KEYS);
             querySeanseDlaDanegoFilmu = connection.prepareStatement(QUERY_SEANSE_DLA_DANEGO_FILMU);
             queryIdMiejsca = connection.prepareStatement(QUERY_ID_MIEJSCA, Statement.RETURN_GENERATED_KEYS);
+            utworzFilm = connection.prepareStatement(UTWORZ_FILM, Statement.RETURN_GENERATED_KEYS);
+            usunFilm = connection.prepareStatement(USUN_FILM);
+            usunSeansDlaDanegoFilmu = connection.prepareStatement(USUN_SEANS_DLA_DANEGO_FILMU);
 
             return true;
         } catch (SQLException e) {
@@ -180,15 +188,22 @@ public class DatabaseConnector{
             if(querySeanseDlaDanegoFilmu != null){
                 querySeanseDlaDanegoFilmu.close();
             }
+            if(utworzFilm != null){
+                utworzFilm.close();
+            }
+            if(usunFilm != null){
+                usunFilm.close();
+            }
+            if(usunSeansDlaDanegoFilmu != null){
+                usunFilm.close();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public DatabaseConnector(){
-        System.out.println(getClass().getResource("/resources/static/production.db"));
         try {
             this.connection = DriverManager.getConnection("jdbc:sqlite:src/sample/resources/static/" + DB_NAME);
         }catch (SQLException e){
@@ -280,7 +295,30 @@ public class DatabaseConnector{
         }
     }
 
-  public int utworzSeans(int idFilmu, int idSali, String dataSeansu) throws SQLException{
+    public void utworzFilm(String tytul, String czasTrwania, String opis) throws SQLException{
+
+        utworzFilm.setString(1, tytul);
+        utworzFilm.setString(2, czasTrwania);
+        utworzFilm.setString(3, opis);
+
+
+        int affected = utworzFilm.executeUpdate();
+        if(affected !=1) {
+            throw new SQLException("Nie dodano filmu");
+        }
+    }
+
+    public void usunFilm(int idFilmu) throws SQLException{
+
+        usunFilm.setInt(1, idFilmu);
+        usunFilm.executeUpdate();
+
+        usunSeansDlaDanegoFilmu.setInt(1,idFilmu);
+        usunSeansDlaDanegoFilmu.executeUpdate();
+    }
+
+
+    public int utworzSeans(int idFilmu, int idSali, String dataSeansu) throws SQLException{
 
         utworzSeans.setInt(1,idFilmu);
         utworzSeans.setInt(2, idSali);
@@ -428,14 +466,6 @@ public class DatabaseConnector{
     }
 
 
-    public Connection getConnection(){
-        return this.connection;
-    }
-
-    public static DatabaseConnector getInstance() {
-        return instance;
-    }
-
     public void insertTransakcja(Transakcje transakcja) {
         String query = "INSERT INTO TRANSAKCJE (id_transakcji, wartosc_transakcji) VALUES (? , ?);";
         try{
@@ -468,5 +498,13 @@ public class DatabaseConnector{
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public Connection getConnection(){
+        return this.connection;
+    }
+
+    public static DatabaseConnector getInstance() {
+        return instance;
     }
 }
