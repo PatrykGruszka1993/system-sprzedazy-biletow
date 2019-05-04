@@ -32,6 +32,9 @@ public class Controller implements Initializable {
     private GridPane seat_grid;
 
     @FXML
+    private MenuItem lista_filmow;
+
+    @FXML
     private ComboBox<Filmy> comboBoxFilm;
 
     @FXML
@@ -278,5 +281,31 @@ public class Controller implements Initializable {
 
             return przygotowaneBilety;
         }
+    }
+
+
+    public void otworzPanelFilmy(ActionEvent actionEvent) {
+
+
+        try{
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/lista_filmow_view.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Lista filmów");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
