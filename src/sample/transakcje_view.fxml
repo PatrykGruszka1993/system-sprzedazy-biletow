@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0"
+            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sample.controller.TransakcjeController">
+
+    <children>
+        <fx:define>
+            <ToggleGroup fx:id="FileMenuToggleGroup"/>
+        </fx:define>
+        <MenuBar layoutY="2.0" prefHeight="19.0" prefWidth="1024.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <RadioMenuItem mnemonicParsing="false" fx:id="sprzedażViewMenuItem" text="Sprzedaż biletów" toggleGroup="$FileMenuToggleGroup"/>
+                        <RadioMenuItem mnemonicParsing="false" text="Przegląd transakcji"  selected="true" toggleGroup="$FileMenuToggleGroup"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
+
+</AnchorPane>

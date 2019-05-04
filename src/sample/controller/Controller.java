@@ -52,6 +52,9 @@ public class Controller implements Initializable {
     @FXML
     private Button ticket_seller;
 
+    @FXML
+    private RadioMenuItem transactionViewMenuItem;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -103,7 +106,18 @@ public class Controller implements Initializable {
             }
         }));
 
+        transactionViewMenuItem.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/transakcje_view.fxml"));
+                Parent root = loader.load();
 
+                Main.getPrimaryStage().setScene(new Scene(root));
+                Main.getPrimaryStage().show();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
     }
 
     @FXML
