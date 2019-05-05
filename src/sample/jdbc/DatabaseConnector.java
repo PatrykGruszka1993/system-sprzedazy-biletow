@@ -577,7 +577,7 @@ public class DatabaseConnector{
     }
 
     public List<Transakcje> pobierzTransakcje(int strona){
-        String query = "SELECT * FROM Transakcje LIMIT 25 OFFSET ?";
+        String query = "SELECT * FROM Transakcje LIMIT 25 OFFSET ?;";
         List<Transakcje> transakcje = new ArrayList<>();
 
         try{
@@ -600,7 +600,7 @@ public class DatabaseConnector{
     }
 
     public int liczbaStronTransakcji(){
-        String query = "SELECT COUNT (*) FROM Transakcje";
+        String query = "SELECT COUNT (*) FROM Transakcje;";
 
         try{
             Statement stm = connection.createStatement();
@@ -615,7 +615,7 @@ public class DatabaseConnector{
     }
 
     public List<Bilety> pobierzBiletyDlaTransakcji(int idTransakcji, int strona){
-        String query = "SELECT * FROM Bilety WHERE id_transakcji =? LIMIT 25 OFFSET ?";
+        String query = "SELECT * FROM Bilety WHERE id_transakcji =? LIMIT 25 OFFSET ?;";
         List<Bilety> bilety = new ArrayList<>();
 
         try{
@@ -647,7 +647,7 @@ public class DatabaseConnector{
     }
 
     public int liczbaStronBiletów(int idTransakcji){
-        String query = "SELECT COUNT (*) FROM Bilety WHERE id_transakcji =?";
+        String query = "SELECT COUNT (*) FROM Bilety WHERE id_transakcji =?;";
 
         try{
             PreparedStatement stm = connection.prepareStatement(query);
@@ -663,7 +663,7 @@ public class DatabaseConnector{
     }
 
     public void deleteBiletyDlaTransakcji(int id_transakcji){
-        String query = "DELETE FROM Bilety WHERE id_transakcji =?";
+        String query = "DELETE FROM Bilety WHERE id_transakcji =?;";
 
         try{
             PreparedStatement stm = connection.prepareStatement(query);
@@ -676,7 +676,7 @@ public class DatabaseConnector{
     }
 
     public void deleteTransakcję(int id_transakcji){
-        String query = "DELETE FROM Transakcje WHERE id_transakcji =?";
+        String query = "DELETE FROM Transakcje WHERE id_transakcji =?;";
 
         try{
             PreparedStatement stm = connection.prepareStatement(query);
@@ -686,6 +686,66 @@ public class DatabaseConnector{
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public PDFDataModel przygotujJedenBiletDoDruku(Bilety bilet, Transakcje transakcja){
+        PDFDataModel model = new PDFDataModel();
+        model.bilety = new ArrayList<>();
+        model.bilety.add(bilet);
+        model.transakcja = transakcja;
+
+        String query = "SELECT * FROM Filmy WHERE id_filmu =" + bilet.getIdFilmu() + ";";
+        try{
+            Statement stm = connection.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            model.film = new Filmy();
+            model.film.setIdFilmu(rs.getInt(INDEX_FILMY_ID_FILMU));
+            model.film.setTytul(rs.getString(INDEX_FILMY_TYTUL));
+            model.film.setCzasTrwania(rs.getString(INDEX_FILMY_CZAS_TRWANIA));
+            model.film.setOpis(rs.getString(INDEX_FILMY_OPIS));
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        query = "SELECT * FROM Seanse WHERE id_seansu=" + bilet.getIdSeansu() + ";";
+        try{
+            Statement stm = connection.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            model.seans = new Seanse();
+            model.seans.setIdSeansu(rs.getInt(INDEX_SEANSE_ID_SEANSU));
+            model.seans.setIdFilmu(rs.getInt(INDEX_SEANSE_ID_FILMU));
+            model.seans.setIdSali(rs.getInt(INDEX_SEANSE_ID_SALI));
+            String dataString = rs.getString(INDEX_SEANSE_DATA_SEANSU);
+            SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            try {
+                model.seans.setDataSeansu(data.parse(dataString));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        model.miejsca = new ArrayList<>();
+        query = "SELECT * FROM Miejsca WHERE id_miejsca =" + bilet.getIdMiejsca() + ";";
+        try{
+            Statement stm = connection.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            Miejsca m = new Miejsca();
+            m.setIdMiejsca(rs.getInt(INDEX_MIEJSCA_ID_MIEJSCA));
+            m.setIdSali(rs.getInt(INDEX_MIEJSCA_ID_SALI));
+            m.setIdFilmu(rs.getInt(INDEX_MIEJSCA_ID_FILMU));
+            m.setIdSeansu(rs.getInt(INDEX_MIEJSCA_ID_SEASNU));
+            m.setNrMiejsca(rs.getInt(INDEX_MIEJSCA_NR_MIEJESA));
+            m.setRzad(rs.getInt(INDEX_MIEJSCA_RZAD));
+
+            model.miejsca.add(m);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return model;
     }
 
     public Connection getConnection(){

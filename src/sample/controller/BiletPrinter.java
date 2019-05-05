@@ -16,11 +16,14 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
 public class BiletPrinter {
 
     private PDFDataModel model;
+
+    private SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     BiletPrinter(PDFDataModel model){
         this.model = model;
@@ -106,7 +109,7 @@ public class BiletPrinter {
             sklejanyString.append("<fo:table-row>\n" +
                     "\t\t<fo:table-cell padding-bottom=\"10pt\">\n" +
                     "\t\t\t<fo:block font-family=\"Calibri\" font-size=\"12pt\">\n" +
-                    "\t\t\t\t<fo:inline font-weight=\"bold\">DATA:</fo:inline> "  + model.seans.toString() + "\n" +
+                    "\t\t\t\t<fo:inline font-weight=\"bold\">DATA:</fo:inline> "  + dateFormat.format(model.seans.getDataSeansu()) + "\n" +
                     "\t\t\t</fo:block>\n" +
                     "\t\t</fo:table-cell>\n" +
                     "\t\t<fo:table-cell padding-bottom=\"10pt\">\n" +

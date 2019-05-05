@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import sample.Main;
 import sample.entity.Bilety;
+import sample.entity.PDFDataModel;
 import sample.entity.Transakcje;
 import sample.jdbc.DatabaseConnector;
 
@@ -197,6 +198,15 @@ public class TransakcjeController implements Initializable {
     }
 
     private void zdarzenieDlaWydrukuBiletu(){
+        wydrukujBiletMenuItem.setOnAction(event -> {
+            BiletPrinter bp = new BiletPrinter(przygotujBiletDoDruku());
+            bp.run();
+            System.out.println("Bilet wydrukowany.");
+        });
 
+    }
+
+    private PDFDataModel przygotujBiletDoDruku(){
+        return DatabaseConnector.getInstance().przygotujJedenBiletDoDruku(actualBilet,actualTransaction);
     }
 }
