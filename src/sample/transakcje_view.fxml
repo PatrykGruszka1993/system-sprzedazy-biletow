@@ -43,36 +43,8 @@
 
         <Label layoutX="40.0" layoutY="47.0">LISTA TRANSAKCJI </Label>
 
-        <ListView layoutX="40.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="ID: #1 Wartość: 10.00" />
-                    <String fx:value="Two" />
-                    <String fx:value="Three" />
-                    <String fx:value="Four" />
-                    <String fx:value="Five" />
-                    <String fx:value="Six" />
-                    <String fx:value="Seven" />
-                    <String fx:value="Eight" />
-                    <String fx:value="Nine" />
-                    <String fx:value="Ten" />
-                    <String fx:value="Ichi" />
-                    <String fx:value="Ni" />
-                    <String fx:value="San" />
-                    <String fx:value="Shi" />
-                    <String fx:value="Go" />
-                    <String fx:value="Roku" />
-                    <String fx:value="Shichi" />
-                    <String fx:value="Hachi" />
-                    <String fx:value="Kyu" />
-                    <String fx:value="Ju" />
-                    <String fx:value="Eins" />
-                    <String fx:value="Zwei" />
-                    <String fx:value="Drei" />
-                    <String fx:value="Vier" />
-                    <String fx:value="Funf" />
-                </FXCollections>
-            </items>
+        <ListView fx:id="transactionListView" layoutX="40.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0">
+
         </ListView>
 
       <GridPane layoutX="40.0" layoutY="667.0" prefHeight="30.0" prefWidth="248.0">
@@ -88,16 +60,16 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="transaction_previous_page" ellipsisString="&lt;&lt;" mnemonicParsing="false" text="&lt;&lt;" />
-             <TextField fx:id="transaction_actual_page" GridPane.columnIndex="2" />
+
+             <TextField fx:id="transaction_actual_page" GridPane.columnIndex="2" text="1"/>
              <Label fx:id="transaction_max_page" text=" / X" GridPane.columnIndex="3" />
-            <Button fx:id="transaction_next_page" alignment="CENTER_RIGHT" mnemonicParsing="false" text="&gt;&gt;" GridPane.columnIndex="5" GridPane.halignment="RIGHT" />
+
          </children>
       </GridPane>
 
         <Label layoutX="328.0" layoutY="47.0">LISTA BILETÓW </Label>
 
-        <ListView layoutX="328.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0">
+        <ListView fx:id="ticketListView" layoutX="328.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="ID BILETU: #1" />
@@ -142,10 +114,10 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button fx:id="tickets_previous_page" ellipsisString="&lt;&lt;" mnemonicParsing="false" text="&lt;&lt;" />
-                <TextField fx:id="tickets_actual_page" GridPane.columnIndex="2" />
+
+                <TextField fx:id="tickets_actual_page" GridPane.columnIndex="2" text="1"/>
                 <Label fx:id="tickets_max_page" text=" / X" GridPane.columnIndex="3" />
-                <Button fx:id="tickets_next_page" alignment="CENTER_RIGHT" mnemonicParsing="false" text="&gt;&gt;" GridPane.columnIndex="5" GridPane.halignment="RIGHT" />
+
             </children>
         </GridPane>
 

@@ -576,6 +576,92 @@ public class DatabaseConnector{
         }
     }
 
+    public List<Transakcje> pobierzTransakcje(int strona){
+        String query = "SELECT * FROM Transakcje LIMIT 25 OFFSET ?";
+        List<Transakcje> transakcje = new ArrayList<>();
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, (strona - 1) * 25);
+            ResultSet resultSet = stm.executeQuery();
+            while (resultSet.next()){
+                Transakcje t = new Transakcje();
+                t.setIdTransakcji(resultSet.getInt(INDEX_TRANSAKCJE_ID_TRANSAKCJI));
+                t.setWartoscTransakcji(resultSet.getInt(INDEX_TRANSAKCJE_WARTOSC_TRANSAKCJI));
+                transakcje.add(t);
+            }
+
+            return transakcje;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int liczbaStronTransakcji(){
+        String query = "SELECT COUNT (*) FROM Transakcje";
+
+        try{
+            Statement stm = connection.createStatement();
+            ResultSet resultSet = stm.executeQuery(query);
+            int liczbaTransakcji = resultSet.getInt(1);
+            return (liczbaTransakcji / 25) + 1;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public List<Bilety> pobierzBiletyDlaTransakcji(int idTransakcji, int strona){
+        String query = "SELECT * FROM Bilety WHERE id_transakcji =? LIMIT 25 OFFSET ?";
+        List<Bilety> bilety = new ArrayList<>();
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1,idTransakcji);
+            stm.setInt(2, (strona - 1) * 25);
+            ResultSet resultSet = stm.executeQuery();
+
+            while (resultSet.next()){
+                Bilety b = new Bilety();
+                b.setIdBiletu(resultSet.getInt(INDEX_BILETY_ID_BILETU));
+                b.setIdSeansu(resultSet.getInt(INDEX_BILETY_ID_SEANSU));
+                b.setIdFilmu(resultSet.getInt(INDEX_BILETY_ID_FILMU));
+                b.setIdSali(resultSet.getInt(INDEX_BILETY_ID_SALI));
+                b.setIdMiejsca(resultSet.getInt(INDEX_BILETY_ID_MIEJSCA));
+                b.setIdTransakcji(resultSet.getInt(INDEX_BILETY_ID_TRANSAKCJI));
+                b.setTypBiletu(Integer.toString(resultSet.getInt(INDEX_BILETY_TYP_BILETU)));
+
+                bilety.add(b);
+            }
+
+            return bilety;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    public int liczbaStronBiletów(int idTransakcji){
+        String query = "SELECT COUNT (*) FROM Bilety WHERE id_transakcji =?";
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, idTransakcji);
+            ResultSet resultSet = stm.executeQuery();
+            int liczbaBiletów = resultSet.getInt(1);
+            return (liczbaBiletów / 25) + 1;
+
+        }catch(SQLException e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     public Connection getConnection(){
         return this.connection;
     }
