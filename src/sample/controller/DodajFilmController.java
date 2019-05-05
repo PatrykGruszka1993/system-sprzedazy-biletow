@@ -44,10 +44,6 @@ public class DodajFilmController implements Initializable {
         String czasTrwaniaStr = czasTrwania.getText().trim();
         String opisStr = opis.getText().trim();
 
-        System.out.println(tytulStr);
-        System.out.println(czasTrwaniaStr);
-        System.out.println(opisStr);
-
         if(tytulStr.equals("") && czasTrwaniaStr.equals("") && opisStr.equals("")){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Błąd");

@@ -76,7 +76,7 @@ public class DatabaseConnector{
     public static final int INDEX_TRANSAKCJE_WARTOSC_TRANSAKCJI = 2;
 
     public static final String QUERY_FILMY =
-            "SELECT * FROM " + TABLE_FILMY;
+            "SELECT * FROM " + TABLE_FILMY + " ORDER BY " + TABLE_FILMY + "." + COLUMN_FILMY_TYTUL;
 
     private static final String QUERY_FILMY_NA_DATE =
             "SELECT * FROM " + TABLE_FILMY + " WHERE " +  COLUMN_FILMY_ID_FILMU + " in (SELECT " +
