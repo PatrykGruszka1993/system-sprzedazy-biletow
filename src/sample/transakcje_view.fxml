@@ -1,51 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
-<AnchorPane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0"
-            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sample.controller.TransakcjeController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.TransakcjeController">
 
     <children>
         <fx:define>
-            <ToggleGroup fx:id="FileMenuToggleGroup"/>
+            <ToggleGroup fx:id="FileMenuToggleGroup" />
         </fx:define>
         <MenuBar layoutY="2.0" prefHeight="19.0" prefWidth="1024.0">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="Plik">
                     <items>
-                        <RadioMenuItem mnemonicParsing="false" fx:id="sprzedażViewMenuItem" text="Sprzedaż biletów" toggleGroup="$FileMenuToggleGroup"/>
-                        <RadioMenuItem mnemonicParsing="false" text="Przegląd transakcji"  selected="true" toggleGroup="$FileMenuToggleGroup"/>
+                        <RadioMenuItem fx:id="sprzedażViewMenuItem" mnemonicParsing="false" text="Sprzedaż biletów" />
+                        <RadioMenuItem mnemonicParsing="false" selected="true" text="Przegląd transakcji" toggleGroup="$FileMenuToggleGroup" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" text="Edycja">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" text="Anuluj transakcję" />
+                        <MenuItem mnemonicParsing="false" text="Wydrukuj bilet" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <ListView layoutY="27.0">
+
+
+
+        <Label layoutX="40.0" layoutY="47.0">LISTA TRANSAKCJI </Label>
+
+        <ListView layoutX="40.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="One"/>
-                    <String fx:value="Two"/>
-                    <String fx:value="Three"/>
-                    <String fx:value="Four"/>
-                    <String fx:value="Five"/>
+                    <String fx:value="ID: #1 Wartość: 10.00" />
+                    <String fx:value="Two" />
+                    <String fx:value="Three" />
+                    <String fx:value="Four" />
+                    <String fx:value="Five" />
+                    <String fx:value="Six" />
+                    <String fx:value="Seven" />
+                    <String fx:value="Eight" />
+                    <String fx:value="Nine" />
+                    <String fx:value="Ten" />
+                    <String fx:value="Ichi" />
+                    <String fx:value="Ni" />
+                    <String fx:value="San" />
+                    <String fx:value="Shi" />
+                    <String fx:value="Go" />
+                    <String fx:value="Roku" />
+                    <String fx:value="Shichi" />
+                    <String fx:value="Hachi" />
+                    <String fx:value="Kyu" />
+                    <String fx:value="Ju" />
+                    <String fx:value="Eins" />
+                    <String fx:value="Zwei" />
+                    <String fx:value="Drei" />
+                    <String fx:value="Vier" />
+                    <String fx:value="Funf" />
                 </FXCollections>
             </items>
         </ListView>
+
+      <GridPane layoutX="40.0" layoutY="667.0" prefHeight="30.0" prefWidth="248.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="36.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="53.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="44.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.0" minWidth="8.0" prefWidth="39.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="422.0" minWidth="10.0" prefWidth="28.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="566.0" minWidth="10.0" prefWidth="43.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="transaction_previous_page" ellipsisString="&lt;&lt;" mnemonicParsing="false" text="&lt;&lt;" />
+             <TextField fx:id="transaction_actual_page" GridPane.columnIndex="2" />
+             <Label fx:id="transaction_max_page" text=" / X" GridPane.columnIndex="3" />
+            <Button fx:id="transaction_next_page" alignment="CENTER_RIGHT" mnemonicParsing="false" text="&gt;&gt;" GridPane.columnIndex="5" GridPane.halignment="RIGHT" />
+         </children>
+      </GridPane>
+
+        <Label layoutX="328.0" layoutY="47.0">LISTA BILETÓW </Label>
+
+        <ListView layoutX="328.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="ID BILETU: #1" />
+                    <String fx:value="Two" />
+                    <String fx:value="Three" />
+                    <String fx:value="Four" />
+                    <String fx:value="Five" />
+                    <String fx:value="Six" />
+                    <String fx:value="Seven" />
+                    <String fx:value="Eight" />
+                    <String fx:value="Nine" />
+                    <String fx:value="Ten" />
+                    <String fx:value="Ichi" />
+                    <String fx:value="Ni" />
+                    <String fx:value="San" />
+                    <String fx:value="Shi" />
+                    <String fx:value="Go" />
+                    <String fx:value="Roku" />
+                    <String fx:value="Shichi" />
+                    <String fx:value="Hachi" />
+                    <String fx:value="Kyu" />
+                    <String fx:value="Ju" />
+                    <String fx:value="Eins" />
+                    <String fx:value="Zwei" />
+                    <String fx:value="Drei" />
+                    <String fx:value="Vier" />
+                    <String fx:value="Funf" />
+                </FXCollections>
+            </items>
+        </ListView>
+
+        <GridPane layoutX="328.0" layoutY="667.0" prefHeight="30.0" prefWidth="248.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="36.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="53.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="44.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.0" minWidth="8.0" prefWidth="39.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="422.0" minWidth="10.0" prefWidth="28.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="566.0" minWidth="10.0" prefWidth="43.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Button fx:id="tickets_previous_page" ellipsisString="&lt;&lt;" mnemonicParsing="false" text="&lt;&lt;" />
+                <TextField fx:id="tickets_actual_page" GridPane.columnIndex="2" />
+                <Label fx:id="tickets_max_page" text=" / X" GridPane.columnIndex="3" />
+                <Button fx:id="tickets_next_page" alignment="CENTER_RIGHT" mnemonicParsing="false" text="&gt;&gt;" GridPane.columnIndex="5" GridPane.halignment="RIGHT" />
+            </children>
+        </GridPane>
+
     </children>
 
 </AnchorPane>

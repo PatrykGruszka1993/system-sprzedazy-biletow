@@ -23,7 +23,7 @@ public class TransakcjeController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/sample.fxml"));
                 Parent root = loader.load();
 
-                Main.getPrimaryStage().setScene(new Scene(root));
+                Main.getPrimaryStage().setScene(new Scene(root, 1024,768));
                 Main.getPrimaryStage().show();
             }catch (Exception e){
                 e.printStackTrace();

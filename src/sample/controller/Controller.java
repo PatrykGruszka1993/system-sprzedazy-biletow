@@ -111,7 +111,7 @@ public class Controller implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/transakcje_view.fxml"));
                 Parent root = loader.load();
 
-                Main.getPrimaryStage().setScene(new Scene(root));
+                Main.getPrimaryStage().setScene(new Scene(root, 616,717));
                 Main.getPrimaryStage().show();
             }catch (Exception e){
                 e.printStackTrace();
