@@ -36,6 +36,9 @@
             <items>
               <MenuItem fx:id="lista_filmow" mnemonicParsing="false" onAction="#otworzPanelFilmy" text="Lista filmów" />
             </items>
+            <items>
+               <MenuItem fx:id="lista_seansow" mnemonicParsing="false" onAction="#otworzPanelSeanse" text="Lista seansów" />
+            </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Pomoc">
             <items>

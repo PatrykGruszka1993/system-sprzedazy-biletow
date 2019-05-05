@@ -132,10 +132,10 @@ public class ListaFilmowController implements Initializable {
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Potwierdzenie usuniecia filmu");
+        alert.setTitle("Potwierdzenie usunięcia filmu");
         alert.setHeaderText(null);
         alert.setGraphic(null);
-        alert.setContentText("Czy na pewno chcesz usunac film \"" + film.getTytul() +  "\" ?");
+        alert.setContentText("Czy na pewno chcesz usunąć film \"" + film.getTytul() +  "\" ?");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){

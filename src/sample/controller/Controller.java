@@ -285,8 +285,6 @@ public class Controller implements Initializable {
 
 
     public void otworzPanelFilmy(ActionEvent actionEvent) {
-
-
         try{
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/lista_filmow_view.fxml"));
@@ -302,6 +300,25 @@ public class Controller implements Initializable {
 
 
 
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void otworzPanelSeanse(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/lista_seansow_view.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Lista seansow");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
 
         } catch (IOException e) {
             e.printStackTrace();

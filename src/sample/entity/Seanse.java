@@ -70,6 +70,6 @@ public class Seanse {
     public String toString() {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        return format.format(dataSeansu);
+        return format.format(dataSeansu) + " | Sala nr " + getIdSali();
     }
 }

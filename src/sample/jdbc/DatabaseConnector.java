@@ -83,6 +83,9 @@ public class DatabaseConnector{
                     COLUMN_SEANSE_ID_FILMU + " FROM " + TABLE_SEANSE + " WHERE  date(" +
                     COLUMN_SEASNE_DATA_SEANSU +") =?);";
 
+    public static final String QUERY_SEANSE_DLA_DANEGO_FILMU_BEZ_DATY =
+            "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + "=?;";
+
     public static final String QUERY_SEANSE_DLA_DANEGO_FILMU =
             "SELECT * FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU +
                     "=? AND date(" + COLUMN_SEASNE_DATA_SEANSU + ") =?;";
@@ -135,10 +138,16 @@ public class DatabaseConnector{
                     "WHERE " + TABLE_FILMY + "." + COLUMN_FILMY_ID_FILMU + "=?;";
 
     public static final String USUN_FILM =
-            "DELETE FROM " + TABLE_FILMY + " WHERE " + TABLE_FILMY + "." + COLUMN_FILMY_ID_FILMU + " =?";
+            "DELETE FROM " + TABLE_FILMY + " WHERE " + TABLE_FILMY + "." + COLUMN_FILMY_ID_FILMU + " =?;";
 
     public static final String USUN_SEANS_DLA_DANEGO_FILMU =
-            "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_MIEJSCA_ID_FILMU + " =?";
+            "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + " =?;";
+
+    public static final String USUN_SEANS =
+            "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_SEASNSU + "=?;";
+
+    public static final String USUN_MIEJSCA_W_DANYM_SEANSIE =
+            "DELETE FROM " + TABLE_MIEJSCA + " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =?;";
 
 
 
@@ -149,12 +158,14 @@ public class DatabaseConnector{
     private PreparedStatement generujMiejsca;
     private PreparedStatement utworzTransakcje;
     private PreparedStatement querySeanseDlaDanegoFilmu;
+    private PreparedStatement querySeanseDlaDanegoFilmuBezDaty;
     private PreparedStatement queryIdMiejsca;
     private PreparedStatement utworzFilm;
     private PreparedStatement usunFilm;
     private PreparedStatement usunSeansDlaDanegoFilmu;
     private PreparedStatement edytujFilm;
-
+    private PreparedStatement usunSeans;
+    private PreparedStatement usunMiejscaWDanymSeansie;
 
     private static DatabaseConnector instance = new DatabaseConnector();
 
@@ -171,6 +182,9 @@ public class DatabaseConnector{
             usunFilm = connection.prepareStatement(USUN_FILM);
             usunSeansDlaDanegoFilmu = connection.prepareStatement(USUN_SEANS_DLA_DANEGO_FILMU);
             edytujFilm = connection.prepareStatement(EDYTUJ_FILM);
+            querySeanseDlaDanegoFilmuBezDaty = connection.prepareStatement(QUERY_SEANSE_DLA_DANEGO_FILMU_BEZ_DATY);
+            usunSeans = connection.prepareStatement(USUN_SEANS);
+            usunMiejscaWDanymSeansie = connection.prepareStatement(USUN_MIEJSCA_W_DANYM_SEANSIE);
 
             return true;
         } catch (SQLException e) {
@@ -199,6 +213,9 @@ public class DatabaseConnector{
             if(querySeanseDlaDanegoFilmu != null){
                 querySeanseDlaDanegoFilmu.close();
             }
+            if(querySeanseDlaDanegoFilmuBezDaty != null){
+                querySeanseDlaDanegoFilmuBezDaty.close();
+            }
             if(utworzFilm != null){
                 utworzFilm.close();
             }
@@ -211,6 +228,13 @@ public class DatabaseConnector{
             if(edytujFilm != null){
                 edytujFilm.close();
             }
+            if(usunSeans != null){
+                usunSeans.close();
+            }
+            if(usunMiejscaWDanymSeansie != null){
+                usunMiejscaWDanymSeansie.close();
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -283,8 +307,24 @@ public class DatabaseConnector{
             e.printStackTrace();
         }
 
-        try(ResultSet resultSet = querySeanseDlaDanegoFilmu.executeQuery()){
-            while(resultSet.next()){
+        return wyślijZapytanieOSeanse(seanse, querySeanseDlaDanegoFilmu);
+    }
+
+    public List<Seanse> querySeanseDlaDanegoFilmuBezDaty(int idFilmu){
+        List<Seanse> seanse = new ArrayList<>();
+        try {
+            querySeanseDlaDanegoFilmuBezDaty.setInt(1, idFilmu);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return wyślijZapytanieOSeanse(seanse, querySeanseDlaDanegoFilmuBezDaty);
+
+    }
+
+    private List<Seanse> wyślijZapytanieOSeanse(List<Seanse> seanse, PreparedStatement query) {
+        try(ResultSet resultSet = query.executeQuery()) {
+            while (resultSet.next()) {
                 Seanse seans = new Seanse();
 
                 seans.setIdSeansu(resultSet.getInt(INDEX_SEANSE_ID_SEANSU));
@@ -301,7 +341,6 @@ public class DatabaseConnector{
                 seanse.add(seans);
             }
             return seanse;
-
         } catch (SQLException exe){
             System.out.println("Zapytanie zakonczone niepowodzeniem " + exe.getMessage());
             exe.printStackTrace();
@@ -360,6 +399,19 @@ public class DatabaseConnector{
         } else {
             throw new SQLException("Nie mozna było zdobyć idSeansu!");
         }
+    }
+
+    public void usunSeans(int idSeansu) throws SQLException{
+
+        usunMiejscaWDanymSeansie(idSeansu);
+        usunSeans.setInt(1, idSeansu);
+        usunSeans.executeUpdate();
+    }
+
+    public void usunMiejscaWDanymSeansie(int idSeansu) throws SQLException{
+        usunMiejscaWDanymSeansie.setInt(1,idSeansu);
+        usunMiejscaWDanymSeansie.executeUpdate();
+
     }
 
 
