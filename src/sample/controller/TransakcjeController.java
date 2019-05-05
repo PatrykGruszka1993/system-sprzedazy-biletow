@@ -17,6 +17,7 @@ import sample.jdbc.DatabaseConnector;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class TransakcjeController implements Initializable {
@@ -35,6 +36,13 @@ public class TransakcjeController implements Initializable {
 
     @FXML
     private RadioMenuItem sprzedażViewMenuItem;
+
+    @FXML
+    private MenuItem anulujTransakcjęMenuItem;
+
+    @FXML
+    private MenuItem wydrukujBiletMenuItem;
+
     
     @FXML
     private ListView transactionListView;
@@ -58,19 +66,7 @@ public class TransakcjeController implements Initializable {
         obserwujZmianęStronyBiletów();
         obserwujZmianęAktualnejTransakcji();
         obserwujZmianęAktualnegoBiletu();
-
-        sprzedażViewMenuItem.setOnAction(event -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/sample.fxml"));
-                Parent root = loader.load();
-
-                Main.getPrimaryStage().setScene(new Scene(root, 1024,768));
-                Main.getPrimaryStage().show();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-        });
+        dodanieZdarzeńDlaPaskaMenu();
     }
 
     private void wczytajTransakcje(){
@@ -138,5 +134,69 @@ public class TransakcjeController implements Initializable {
                 System.out.println(actualBilet.getIdBiletu());
             }
         });
+    }
+
+    private void dodanieZdarzeńDlaPaskaMenu(){
+        zdarzenieDlaZmianyWidoku();
+        zdarzenieDlaAnulowaniaTransakcji();
+        zdarzenieDlaWydrukuBiletu();
+    }
+
+    private void zdarzenieDlaZmianyWidoku(){
+        sprzedażViewMenuItem.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/sample.fxml"));
+                Parent root = loader.load();
+
+                Main.getPrimaryStage().setScene(new Scene(root, 1024,768));
+                Main.getPrimaryStage().show();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        });
+    }
+
+    private void zdarzenieDlaAnulowaniaTransakcji(){
+        anulujTransakcjęMenuItem.setOnAction(event -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Potwierdzenie anulowania transakcji");
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.setContentText("Czy na pewno anulować transakcję?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                anulujTransakcję();
+                potwierdźAnulowanie();
+                wczytajStronęTransakcji(Integer.parseInt(transaction_actual_page.getText()));
+            }
+        });
+    }
+
+    private void anulujTransakcję(){
+        usuńBiletyDlaTransakcji();
+        usuńTransakcję();
+    }
+
+    private void usuńBiletyDlaTransakcji(){
+        DatabaseConnector.getInstance().deleteBiletyDlaTransakcji(actualTransaction.getIdTransakcji());
+    }
+
+    private void usuńTransakcję(){
+        DatabaseConnector.getInstance().deleteTransakcję(actualTransaction.getIdTransakcji());
+    }
+
+    private void potwierdźAnulowanie(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Potwierdzenie");
+        alert.setHeaderText(null);
+        alert.setContentText("Anulowanie zakończone.");
+
+        alert.showAndWait();
+    }
+
+    private void zdarzenieDlaWydrukuBiletu(){
+
     }
 }

@@ -662,6 +662,32 @@ public class DatabaseConnector{
         }
     }
 
+    public void deleteBiletyDlaTransakcji(int id_transakcji){
+        String query = "DELETE FROM Bilety WHERE id_transakcji =?";
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1,id_transakcji);
+            stm.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteTransakcję(int id_transakcji){
+        String query = "DELETE FROM Transakcje WHERE id_transakcji =?";
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1,id_transakcji);
+            stm.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public Connection getConnection(){
         return this.connection;
     }
