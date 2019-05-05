@@ -127,11 +127,20 @@ public class DatabaseConnector{
                     TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_NR_MIEJSCA + "=? AND " +
                     TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_RZAD + "=?;";
 
+    public static final String EDYTUJ_FILM =
+            "UPDATE " + TABLE_FILMY +
+                    " SET " + COLUMN_FILMY_TYTUL + "=?, " +
+                    COLUMN_FILMY_CZAS_TRWANIA + "=?, " +
+                    COLUMN_FILMY_OPIS + "=? " +
+                    "WHERE " + TABLE_FILMY + "." + COLUMN_FILMY_ID_FILMU + "=?;";
+
     public static final String USUN_FILM =
             "DELETE FROM " + TABLE_FILMY + " WHERE " + TABLE_FILMY + "." + COLUMN_FILMY_ID_FILMU + " =?";
 
     public static final String USUN_SEANS_DLA_DANEGO_FILMU =
             "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_MIEJSCA_ID_FILMU + " =?";
+
+
 
 
     private Connection connection;
@@ -144,6 +153,7 @@ public class DatabaseConnector{
     private PreparedStatement utworzFilm;
     private PreparedStatement usunFilm;
     private PreparedStatement usunSeansDlaDanegoFilmu;
+    private PreparedStatement edytujFilm;
 
 
     private static DatabaseConnector instance = new DatabaseConnector();
@@ -160,6 +170,7 @@ public class DatabaseConnector{
             utworzFilm = connection.prepareStatement(UTWORZ_FILM, Statement.RETURN_GENERATED_KEYS);
             usunFilm = connection.prepareStatement(USUN_FILM);
             usunSeansDlaDanegoFilmu = connection.prepareStatement(USUN_SEANS_DLA_DANEGO_FILMU);
+            edytujFilm = connection.prepareStatement(EDYTUJ_FILM);
 
             return true;
         } catch (SQLException e) {
@@ -196,6 +207,9 @@ public class DatabaseConnector{
             }
             if(usunSeansDlaDanegoFilmu != null){
                 usunFilm.close();
+            }
+            if(edytujFilm != null){
+                edytujFilm.close();
             }
 
         } catch (SQLException e) {
@@ -306,6 +320,16 @@ public class DatabaseConnector{
         if(affected !=1) {
             throw new SQLException("Nie dodano filmu");
         }
+    }
+
+    public void edytujFilm(int idFilmu, String tytul, String czasTrwania, String opis) throws SQLException{
+        edytujFilm.setString(1, tytul);
+        edytujFilm.setString(2, czasTrwania);
+        edytujFilm.setString(3, opis);
+        edytujFilm.setInt(4, idFilmu);
+
+        edytujFilm.executeUpdate();
+
     }
 
     public void usunFilm(int idFilmu) throws SQLException{

@@ -22,7 +22,7 @@
                </VBox.margin>
                <children>
                   <Button fx:id="add" mnemonicParsing="false" onAction="#dodajFilm" prefWidth="50.0" text="Dodaj" />
-                  <Button fx:id="edit" mnemonicParsing="false" prefWidth="50.0" text="Edytuj">
+                  <Button fx:id="edit" mnemonicParsing="false" onAction="#edytujFilm" prefWidth="50.0" text="Edytuj">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin></Button>

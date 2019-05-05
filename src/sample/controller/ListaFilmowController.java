@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Main;
@@ -80,20 +77,57 @@ public class ListaFilmowController implements Initializable {
         }
     }
 
-    private void odswiezListe() {
-        movie_list.getItems().clear();
-        fillMovieList();
+
+    public void edytujFilm(ActionEvent actionEvent) {
+
+        Filmy film = movie_list.getSelectionModel().getSelectedItem();
+        if (sprawdzCzyNieZaznaczonoFilmu(film)) {
+            return;
+        }
+
+        try{
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/edytuj_film_view.fxml"));
+
+            fxmlLoader.getNamespace().put("idFilmu", film.getIdFilmu());
+            fxmlLoader.getNamespace().put("tytulFilmu", film.getTytul());
+            fxmlLoader.getNamespace().put("czasTrwaniaFilmu", film.getCzasTrwania());
+            fxmlLoader.getNamespace().put("opisFilmu", film.getOpis());
+
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Edytuj film");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+
+            stage.showAndWait();
+            odswiezListe();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void usunFilm(ActionEvent actionEvent) {
-        stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
-        Filmy film = movie_list.getSelectionModel().getSelectedItem();
+    private boolean sprawdzCzyNieZaznaczonoFilmu(Filmy film) {
         if (film == null){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Błąd");
             alert.setHeaderText(null);
             alert.setContentText("Nie wybrano filmu");
             alert.showAndWait();
+            return true;
+        }
+        return false;
+    }
+
+    public void usunFilm(ActionEvent actionEvent) {
+        //stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
+        Filmy film = movie_list.getSelectionModel().getSelectedItem();
+        if (sprawdzCzyNieZaznaczonoFilmu(film)) {
             return;
         }
 
@@ -114,9 +148,17 @@ public class ListaFilmowController implements Initializable {
         }
     }
 
+    private void odswiezListe() {
+        movie_list.getItems().clear();
+        fillMovieList();
+    }
+
     public void anuluj(ActionEvent actionEvent) {
         stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
         stage.close();
     }
 
+    public ListView<Filmy> getMovie_list() {
+        return movie_list;
+    }
 }
