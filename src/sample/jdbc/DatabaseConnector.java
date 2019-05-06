@@ -98,6 +98,9 @@ public class DatabaseConnector{
     public static final String QUERY_MIEJSCA_W_DANYM_SEANSIE =
             "SELECT * FROM " + TABLE_MIEJSCA + " WHERE " + TABLE_MIEJSCA + "." + COLUMN_MIEJSCA_ID_SEANSU + " =?";
 
+    public static final String QUERY_SALE =
+            "SELECT * FROM " + TABLE_SALE + " ORDER BY " + TABLE_SALE + "." + COLUMN_SALE_NAZWA_SALI + ";" ;
+
     public static final String UTWORZ_SEANS =
             "INSERT INTO " + TABLE_SEANSE +
                     " (" + COLUMN_SEANSE_ID_FILMU + ", " + COLUMN_SEANSE_ID_SALI + ", " + COLUMN_SEASNE_DATA_SEANSU +
@@ -263,6 +266,24 @@ public class DatabaseConnector{
                 filmy.add(film);
             }
             return filmy;
+        } catch (SQLException exe){
+            System.out.println("Zapytanie zakonczone niepowodzeniem: " + exe.getMessage());
+            exe.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Sale> querySale(){
+        try(Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(QUERY_SALE)){
+            List<Sale> sale = new ArrayList<>();
+            while (resultSet.next()){
+                Sale sala = new Sale();
+                sala.setIdSali(resultSet.getInt(INDEX_SALE_ID_SALI));
+                sala.setNazwaSali(resultSet.getString(INDEX_SALE_NAZWA_SALI));
+                sale.add(sala);
+            }
+            return sale;
         } catch (SQLException exe){
             System.out.println("Zapytanie zakonczone niepowodzeniem: " + exe.getMessage());
             exe.printStackTrace();

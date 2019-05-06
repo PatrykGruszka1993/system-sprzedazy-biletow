@@ -37,4 +37,9 @@ public class Sale {
     public void setNazwaSali(String nazwaSali) {
         this.nazwaSali.set(nazwaSali);
     }
+
+    @Override
+    public String toString() {
+        return getNazwaSali();
+    }
 }

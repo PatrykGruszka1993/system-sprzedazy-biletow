@@ -4,16 +4,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import sample.Main;
 import sample.entity.Filmy;
 import sample.entity.Seanse;
 import sample.jdbc.DatabaseConnector;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -120,9 +126,32 @@ public class ListaSeansowController implements Initializable {
 
 
     public void dodajSeans(ActionEvent actionEvent) {
+
+        try{
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/dodaj_seans_view.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Dodaj seans");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+            odswiezListe();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public void edytujSeans(ActionEvent actionEvent) {
+
+
     }
     public void usunSeans(ActionEvent actionEvent) {
         Seanse seans = seanseList.getSelectionModel().getSelectedItem();
