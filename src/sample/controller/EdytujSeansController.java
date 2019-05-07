@@ -54,7 +54,6 @@ public class EdytujSeansController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        ustawDate();
         sprawdzPrawidlowoscGodziny();
         sprawdzPrawidlowoscMinuty();
         wypelnijSaleComboBox();
@@ -63,9 +62,9 @@ public class EdytujSeansController implements Initializable {
 
     }
 
-    @FXML
-    private void ustawDate(){
-        datePicker.setValue(LocalDate.now());
+
+    public void ustawDate(LocalDate seansDate){
+        datePicker.setValue(seansDate);
         final Callback<DatePicker, DateCell> dayCellFactory =
                 new Callback<DatePicker, DateCell>() {
                     @Override
@@ -87,6 +86,11 @@ public class EdytujSeansController implements Initializable {
         data =java.sql.Date.valueOf(datePicker.getValue());
         datePicker.valueProperty().addListener((observable, oldValue, newValue) ->
                 data =java.sql.Date.valueOf(datePicker.getValue()));
+    }
+
+    public void ustawGodzine(String h, String m){
+        godzinaText.setText(h);
+        minutaText.setText(m);
     }
 
     public void sprawdzPrawidlowoscGodziny() {

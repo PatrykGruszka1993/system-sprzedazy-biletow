@@ -17,12 +17,15 @@ import sample.Main;
 import sample.entity.Filmy;
 import sample.entity.Seanse;
 import sample.jdbc.DatabaseConnector;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +45,10 @@ public class ListaSeansowController implements Initializable {
     private Stage stage;
 
     private Date data;
+
+    private SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+    private SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -157,6 +164,9 @@ public class ListaSeansowController implements Initializable {
             fxmlLoader.getNamespace().put("idFilmuOld", seans.getIdFilmu());
 
             Parent root = fxmlLoader.load();
+            EdytujSeansController ctrl = fxmlLoader.getController();
+            ctrl.ustawDate(przygotujDatęSeansu(dateFormat.format(seans.getDataSeansu())));
+            ctrl.ustawGodzine(hourFormat.format(seans.getDataSeansu()), minuteFormat.format(seans.getDataSeansu()));
             Stage stage = new Stage();
 
             stage.setScene(new Scene(root));
@@ -171,6 +181,12 @@ public class ListaSeansowController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private LocalDate przygotujDatęSeansu(String data){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(data, formatter);
+        return localDate;
     }
 
     public void usunSeans(ActionEvent actionEvent) {
