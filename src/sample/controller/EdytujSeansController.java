@@ -1,8 +1,5 @@
 package sample.controller;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,19 +13,14 @@ import sample.entity.Sale;
 import sample.entity.Seanse;
 import sample.jdbc.DatabaseConnector;
 
-import javax.swing.*;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
-public class DodajSeansController implements Initializable {
+public class EdytujSeansController implements Initializable {
 
-    @FXML
-    private ListView<Seanse> listaSeansowList;
-    @FXML
-    private ComboBox<Filmy> filmyComboBox;
     @FXML
     private DatePicker datePicker;
     @FXML
@@ -38,35 +30,36 @@ public class DodajSeansController implements Initializable {
     @FXML
     private ComboBox<Sale> salaComboBox;
     @FXML
-    private Button dodajSeanseBtn;
+    private ComboBox<Filmy> filmyComboBox;
+    @FXML
+    private Button edytujSeanseBtn;
     @FXML
     private Button anulujBtn;
     @FXML
-    private Button dodajDoListyBtn;
-    private Button usunSeansZListyBtn;
+    private Label labelSeans;
+
+    @FXML
+    private Label labelSala;
+    @FXML
+    private Label labelFilm;
+
+
+    private Stage stage;
 
     private Date data;
 
     private String minuta;
     private String godzina;
 
-    private Stage stage;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        wypelnijFilmyComboBox();
+
         ustawDate();
-        sprawdzPrawidlowoscMinuty();
         sprawdzPrawidlowoscGodziny();
+        sprawdzPrawidlowoscMinuty();
         wypelnijSaleComboBox();
-
-    }
-
-    private void wypelnijFilmyComboBox(){
-        List<Filmy> filmy = DatabaseConnector.getInstance().queryFilmy();
-
-        ObservableList<Filmy> obList = FXCollections.observableArrayList(filmy);
-        filmyComboBox.getItems().addAll(obList);
+        wypelnijFilmyComboBox();
+        ustawDane();
 
     }
 
@@ -96,8 +89,7 @@ public class DodajSeansController implements Initializable {
                 data =java.sql.Date.valueOf(datePicker.getValue()));
     }
 
-    @FXML
-    public void sprawdzPrawidlowoscGodziny(){
+    public void sprawdzPrawidlowoscGodziny() {
         godzinaText.textProperty().addListener((observable, oldValue, newValue) -> {
             if (godzinaText.getText().matches("([01]?[0-9]|2[0-3])")) {
                 godzina = godzinaText.getText();
@@ -108,8 +100,7 @@ public class DodajSeansController implements Initializable {
         });
     }
 
-    @FXML
-    public void sprawdzPrawidlowoscMinuty(){
+    public void sprawdzPrawidlowoscMinuty() {
         minutaText.textProperty().addListener((observable, oldValue, newValue) -> {
             if(minutaText.getText().matches("[0-5]?[0-9]")){
                 minuta = minutaText.getText();
@@ -127,12 +118,40 @@ public class DodajSeansController implements Initializable {
 
     }
 
-    public void dodajDoListyAction(ActionEvent actionEvent) {
+    private void wypelnijFilmyComboBox(){
+        List<Filmy> filmy = DatabaseConnector.getInstance().queryFilmy();
+
+        ObservableList<Filmy> obList = FXCollections.observableArrayList(filmy);
+        filmyComboBox.getItems().addAll(obList);
+
+    }
+
+    private void ustawDane(){
+        ObservableList<Sale> saleOb = salaComboBox.getItems();
+        saleOb.forEach(sala -> {
+            int idSali= sala.getIdSali();
+            if(idSali == Integer.parseInt(labelSala.getText())){
+                salaComboBox.getSelectionModel().select(sala);
+            }
+        });
+
+        ObservableList<Filmy> filmyOb = filmyComboBox.getItems();
+        filmyOb.forEach(film -> {
+            int idFilmu = film.getIdFilmu();
+            if(idFilmu == Integer.parseInt(labelFilm.getText())){
+                filmyComboBox.getSelectionModel().select(film);
+            }
+        });
+
+    }
+
+    public void edytujSeans(ActionEvent actionEvent) {
+        stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();
 
         if( data.toString().trim().isEmpty() ||
-            godzinaText.getText().trim().isEmpty() ||
-            minutaText.getText().trim().isEmpty() ||
-            salaComboBox.getSelectionModel().isEmpty()) {
+                godzinaText.getText().trim().isEmpty() ||
+                minutaText.getText().trim().isEmpty() ||
+                salaComboBox.getSelectionModel().isEmpty()) {
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Błąd");
@@ -141,12 +160,24 @@ public class DodajSeansController implements Initializable {
             alert.showAndWait();
             return;
         } else {
-            Seanse seans = new Seanse();
+            Date tmpDate = stworzNowaDate(godzina, minuta, data);
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Filmy film = filmyComboBox.getSelectionModel().getSelectedItem();
+            Sale sala = salaComboBox.getSelectionModel().getSelectedItem();
 
-            seans.setDataSeansu(stworzNowaDate(godzina, minuta, data));
-            seans.setIdSali(salaComboBox.getSelectionModel().getSelectedItem().getIdSali());
+            int idSeansu = Integer.parseInt(labelSeans.getText());
 
-            listaSeansowList.getItems().add(seans);
+            String dataSformatowana = formater.format(tmpDate);
+            try {
+                DatabaseConnector.getInstance().edytujSeans(idSeansu,film.getIdFilmu(), sala.getIdSali(), dataSformatowana);
+            } catch (SQLException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Błąd");
+                alert.setHeaderText(null);
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
+            stage.close();
         }
     }
 
@@ -166,32 +197,6 @@ public class DodajSeansController implements Initializable {
         return nowaData;
     }
 
-    public void usunSeansZListy(ActionEvent actionEvent) {
-
-        if(listaSeansowList.getSelectionModel().isEmpty()){
-            return;
-        } else{
-            listaSeansowList.getItems().remove(listaSeansowList.getSelectionModel().getSelectedIndex());
-        }
-    }
-
-    public void dodajSeanse(ActionEvent actionEvent) {
-
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Filmy film = filmyComboBox.getSelectionModel().getSelectedItem();
-
-        ObservableList<Seanse> seanse = listaSeansowList.getItems();
-
-        seanse.forEach(seans -> {
-            try {
-                String data = formater.format(seans.getDataSeansu());
-                DatabaseConnector.getInstance().utworzSeans(film.getIdFilmu(),seans.getIdSali(),data);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-
-    }
 
     public void anuluj(ActionEvent actionEvent) {
         stage = (Stage) ((Button)actionEvent.getSource()).getScene().getWindow();

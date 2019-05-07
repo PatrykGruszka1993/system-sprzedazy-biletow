@@ -146,6 +146,13 @@ public class DatabaseConnector{
     public static final String USUN_SEANS_DLA_DANEGO_FILMU =
             "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_FILMU + " =?;";
 
+    public static final String EDYTUJ_SEANS =
+            "UPDATE " + TABLE_SEANSE +
+                    " SET " + COLUMN_SEANSE_ID_FILMU + "=?, " +
+                    COLUMN_SEANSE_ID_SALI + "=?, " +
+                    COLUMN_SEASNE_DATA_SEANSU + "=? " +
+                    "WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_SEASNSU + "=?;";
+
     public static final String USUN_SEANS =
             "DELETE FROM " + TABLE_SEANSE + " WHERE " + TABLE_SEANSE + "." + COLUMN_SEANSE_ID_SEASNSU + "=?;";
 
@@ -157,16 +164,17 @@ public class DatabaseConnector{
 
     private Connection connection;
     private PreparedStatement queryZajeteMiejsca;
-    private PreparedStatement utworzSeans;
     private PreparedStatement generujMiejsca;
     private PreparedStatement utworzTransakcje;
     private PreparedStatement querySeanseDlaDanegoFilmu;
     private PreparedStatement querySeanseDlaDanegoFilmuBezDaty;
     private PreparedStatement queryIdMiejsca;
     private PreparedStatement utworzFilm;
+    private PreparedStatement edytujFilm;
     private PreparedStatement usunFilm;
     private PreparedStatement usunSeansDlaDanegoFilmu;
-    private PreparedStatement edytujFilm;
+    private PreparedStatement utworzSeans;
+    private PreparedStatement edytujSeans;
     private PreparedStatement usunSeans;
     private PreparedStatement usunMiejscaWDanymSeansie;
 
@@ -186,6 +194,7 @@ public class DatabaseConnector{
             usunSeansDlaDanegoFilmu = connection.prepareStatement(USUN_SEANS_DLA_DANEGO_FILMU);
             edytujFilm = connection.prepareStatement(EDYTUJ_FILM);
             querySeanseDlaDanegoFilmuBezDaty = connection.prepareStatement(QUERY_SEANSE_DLA_DANEGO_FILMU_BEZ_DATY);
+            edytujSeans = connection.prepareStatement(EDYTUJ_SEANS);
             usunSeans = connection.prepareStatement(USUN_SEANS);
             usunMiejscaWDanymSeansie = connection.prepareStatement(USUN_MIEJSCA_W_DANYM_SEANSIE);
 
@@ -230,6 +239,9 @@ public class DatabaseConnector{
             }
             if(edytujFilm != null){
                 edytujFilm.close();
+            }
+            if(edytujSeans != null){
+                edytujSeans.close();
             }
             if(usunSeans != null){
                 usunSeans.close();
@@ -420,6 +432,14 @@ public class DatabaseConnector{
         } else {
             throw new SQLException("Nie mozna było zdobyć idSeansu!");
         }
+    }
+
+    public void edytujSeans(int idSeansu, int idFilmu, int idSali, String dataSeansu) throws SQLException {
+        edytujSeans.setInt(1, idFilmu);
+        edytujSeans.setInt(2, idSali);
+        edytujSeans.setString(3, dataSeansu);
+        edytujSeans.setInt(4, idSeansu);
+        edytujSeans.executeUpdate();
     }
 
     public void usunSeans(int idSeansu) throws SQLException{

@@ -76,13 +76,11 @@ public class ListaSeansowController implements Initializable {
                 data =java.sql.Date.valueOf(calendarPicker.getValue()));
     }
 
-
     private void fillFilmyComboBox() {
         List<Filmy> filmy = DatabaseConnector.getInstance().queryFilmy();
 
         ObservableList<Filmy> obList = FXCollections.observableArrayList(filmy);
         filmyComboBox.getItems().addAll(obList);
-
     }
 
     private void fillSeanseList(){
@@ -106,7 +104,6 @@ public class ListaSeansowController implements Initializable {
                 filtrujListe(null);
                 break;
         }
-
     }
 
     public void filtrujListe(ActionEvent actionEvent) {
@@ -124,11 +121,9 @@ public class ListaSeansowController implements Initializable {
         }
     }
 
-
     public void dodajSeans(ActionEvent actionEvent) {
 
         try{
-
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/dodaj_seans_view.fxml"));
             Parent root = fxmlLoader.load();
             Stage stage = new Stage();
@@ -141,18 +136,43 @@ public class ListaSeansowController implements Initializable {
             stage.showAndWait();
             odswiezListe();
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void edytujSeans(ActionEvent actionEvent) {
 
+        Seanse seans = seanseList.getSelectionModel().getSelectedItem();
+        if (sprawdzCzyNieZaznaczonoSeansu(seans)) {
+            return;
+        }
 
+        try{
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/edytuj_seans_view.fxml"));
+
+            fxmlLoader.getNamespace().put("idSeansuOld", seans.getIdSeansu());
+            fxmlLoader.getNamespace().put("idSaliOld", seans.getIdSali());
+            fxmlLoader.getNamespace().put("idFilmuOld", seans.getIdFilmu());
+
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Edytuj seans");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+
+            stage.showAndWait();
+            odswiezListe();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
     public void usunSeans(ActionEvent actionEvent) {
         Seanse seans = seanseList.getSelectionModel().getSelectedItem();
         if (sprawdzCzyNieZaznaczonoSeansu(seans)) {
