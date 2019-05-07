@@ -789,6 +789,43 @@ public class DatabaseConnector{
         return model;
     }
 
+    public void deleteSale(int id_sali){
+        String query = "DELETE FROM Sale WHERE id_sali =?;";
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1,id_sali);
+            stm.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void insertSala(String nazwa_sali){
+        String query = "INSERT INTO Sale (nazwa_sali) VALUES (?);";
+
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setString(1, nazwa_sali);
+            stm.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSala(int id_sali, String nazwa_sali){
+        String query = "UPDATE Sale SET nazwa_sali =? WHERE id_sali = ?;";
+        try{
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setString(1, nazwa_sali);
+            stm.setInt(2,id_sali);
+            stm.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
     public Connection getConnection(){
         return this.connection;
     }

@@ -39,6 +39,9 @@
             <items>
                <MenuItem fx:id="lista_seansow" mnemonicParsing="false" onAction="#otworzPanelSeanse" text="Lista seansów" />
             </items>
+             <items>
+                <MenuItem fx:id="lista_sal" mnemonicParsing="false" onAction="#otworzPanelSale" text="Lista sal" />
+             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Pomoc">
             <items>

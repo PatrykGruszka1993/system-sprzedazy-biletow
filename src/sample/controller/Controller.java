@@ -325,4 +325,21 @@ public class Controller implements Initializable {
         }
 
     }
+    public void otworzPanelSale(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/sample/lista_sal.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Lista sal");
+            stage.initOwner(Main.getPrimaryStage());
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setResizable(false);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
