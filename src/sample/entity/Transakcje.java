@@ -7,6 +7,11 @@ public class Transakcje {
     private SimpleIntegerProperty idTransakcji;
     private SimpleIntegerProperty wartoscTransakcji;
 
+    public Transakcje() {
+        this.idTransakcji = new SimpleIntegerProperty();
+        this.wartoscTransakcji = new SimpleIntegerProperty();
+    }
+
     public int getIdTransakcji() {
         return idTransakcji.get();
     }

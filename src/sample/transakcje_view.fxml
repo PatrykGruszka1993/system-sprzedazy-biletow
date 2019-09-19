@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="768.0" maxWidth="1024.0" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.TransakcjeController">
+
+    <children>
+        <fx:define>
+            <ToggleGroup fx:id="FileMenuToggleGroup" />
+        </fx:define>
+        <MenuBar layoutY="2.0" prefHeight="19.0" prefWidth="1024.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Plik">
+                    <items>
+                        <RadioMenuItem fx:id="sprzedażViewMenuItem" mnemonicParsing="false" text="Sprzedaż biletów" />
+                        <RadioMenuItem mnemonicParsing="false" selected="true" text="Przegląd transakcji" toggleGroup="$FileMenuToggleGroup" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edycja">
+                    <items>
+                        <MenuItem fx:id="anulujTransakcjęMenuItem" mnemonicParsing="false" text="Anuluj transakcję" />
+                        <MenuItem fx:id="wydrukujBiletMenuItem" mnemonicParsing="false" text="Wydrukuj bilet" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+
+        <Label layoutX="40.0" layoutY="47.0">LISTA TRANSAKCJI </Label>
+
+        <ListView fx:id="transactionListView" layoutX="40.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0" />
+
+      <GridPane layoutX="40.0" layoutY="667.0" prefHeight="30.0" prefWidth="248.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="36.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="53.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="44.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.0" minWidth="8.0" prefWidth="39.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="422.0" minWidth="10.0" prefWidth="28.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="566.0" minWidth="10.0" prefWidth="43.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+
+             <TextField fx:id="transaction_actual_page" GridPane.columnIndex="2" text="1"/>
+             <Label fx:id="transaction_max_page" text=" / X" GridPane.columnIndex="3" />
+
+         </children>
+      </GridPane>
+
+        <Label layoutX="328.0" layoutY="47.0">LISTA BILETÓW </Label>
+
+        <ListView fx:id="ticketListView" layoutX="328.0" layoutY="67.0" prefHeight="580.0" prefWidth="248.0" />
+
+        <GridPane layoutX="328.0" layoutY="667.0" prefHeight="30.0" prefWidth="248.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="36.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="53.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="44.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.0" minWidth="8.0" prefWidth="39.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="422.0" minWidth="10.0" prefWidth="28.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="566.0" minWidth="10.0" prefWidth="43.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+
+                <TextField fx:id="tickets_actual_page" GridPane.columnIndex="2" text="1"/>
+                <Label fx:id="tickets_max_page" text=" / X" GridPane.columnIndex="3" />
+
+            </children>
+        </GridPane>
+
+    </children>
+
+</AnchorPane>

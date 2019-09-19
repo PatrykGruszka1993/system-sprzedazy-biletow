@@ -7,11 +7,23 @@ import javafx.beans.property.SimpleStringProperty;
 public class Bilety {
 
     private SimpleIntegerProperty idBiletu;
+    private SimpleIntegerProperty idFilmu;
+    private SimpleIntegerProperty idMiejsca;
+    private SimpleIntegerProperty idSali;
     private SimpleIntegerProperty idSeansu;
     private SimpleIntegerProperty idTransakcji;
-    private SimpleIntegerProperty seanseIdFilmu;
-    private SimpleIntegerProperty seanseIdMiejsca;
     private SimpleStringProperty typBiletu;
+
+
+    public Bilety() {
+        this.idBiletu = new SimpleIntegerProperty();
+        this.idFilmu = new SimpleIntegerProperty();
+        this.idMiejsca = new SimpleIntegerProperty();
+        this.idSali = new SimpleIntegerProperty();
+        this.idSeansu = new SimpleIntegerProperty();
+        this.idTransakcji = new SimpleIntegerProperty();
+        this.typBiletu = new SimpleStringProperty();
+    }
 
     public int getIdBiletu() {
         return idBiletu.get();
@@ -23,6 +35,42 @@ public class Bilety {
 
     public void setIdBiletu(int idBiletu) {
         this.idBiletu.set(idBiletu);
+    }
+
+    public int getIdFilmu() {
+        return idFilmu.get();
+    }
+
+    public SimpleIntegerProperty idFilmuProperty() {
+        return idFilmu;
+    }
+
+    public void setIdFilmu(int idFilmu) {
+        this.idFilmu.set(idFilmu);
+    }
+
+    public int getIdMiejsca() {
+        return idMiejsca.get();
+    }
+
+    public SimpleIntegerProperty idMiejscaProperty() {
+        return idMiejsca;
+    }
+
+    public void setIdMiejsca(int idMiejsca) {
+        this.idMiejsca.set(idMiejsca);
+    }
+
+    public int getIdSali() {
+        return idSali.get();
+    }
+
+    public SimpleIntegerProperty idSaliProperty() {
+        return idSali;
+    }
+
+    public void setIdSali(int idSali) {
+        this.idSali.set(idSali);
     }
 
     public int getIdSeansu() {
@@ -49,35 +97,15 @@ public class Bilety {
         this.idTransakcji.set(idTransakcji);
     }
 
-    public int getSeanseIdFilmu() {
-        return seanseIdFilmu.get();
+    public String getTypBiletu() {
+        return typBiletu.get();
     }
 
-    public SimpleIntegerProperty seanseIdFilmuProperty() {
-        return seanseIdFilmu;
-    }
-
-    public void setSeanseIdFilmu(int seanseIdFilmu) {
-        this.seanseIdFilmu.set(seanseIdFilmu);
-    }
-
-    public int getSeanseIdMiejsca() {
-        return seanseIdMiejsca.get();
-    }
-
-    public SimpleIntegerProperty seanseIdMiejscaProperty() {
-        return seanseIdMiejsca;
-    }
-
-    public void setSeanseIdMiejsca(int seanseIdMiejsca) {
-        this.seanseIdMiejsca.set(seanseIdMiejsca);
-    }
-
-    public SimpleStringProperty getTypBiletu() {
+    public SimpleStringProperty typBiletuProperty() {
         return typBiletu;
     }
 
-    public void setTypBiletu(SimpleStringProperty typBiletu) {
-        this.typBiletu = typBiletu;
+    public void setTypBiletu(String typBiletu) {
+        this.typBiletu.set(typBiletu);
     }
 }

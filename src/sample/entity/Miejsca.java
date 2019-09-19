@@ -5,9 +5,23 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class Miejsca {
 
     private SimpleIntegerProperty idMiejsca;
+    private SimpleIntegerProperty idFilmu;
+    private SimpleIntegerProperty idSali;
+    private SimpleIntegerProperty idSeansu;
+
     private SimpleIntegerProperty nrMiejsca;
-    private SimpleIntegerProperty nrSali;
     private SimpleIntegerProperty rzad;
+
+    public Miejsca() {
+        this.idMiejsca = new SimpleIntegerProperty();
+        this.idFilmu = new SimpleIntegerProperty();
+        this.idSali = new SimpleIntegerProperty();
+        this.idSeansu = new SimpleIntegerProperty();
+        this.nrMiejsca = new SimpleIntegerProperty();
+        this.rzad = new SimpleIntegerProperty();
+    }
+
+
 
     public int getIdMiejsca() {
         return idMiejsca.get();
@@ -19,6 +33,42 @@ public class Miejsca {
 
     public void setIdMiejsca(int idMiejsca) {
         this.idMiejsca.set(idMiejsca);
+    }
+
+    public int getIdFilmu() {
+        return idFilmu.get();
+    }
+
+    public SimpleIntegerProperty idFilmuProperty() {
+        return idFilmu;
+    }
+
+    public void setIdFilmu(int idFilmu) {
+        this.idFilmu.set(idFilmu);
+    }
+
+    public int getIdSali() {
+        return idSali.get();
+    }
+
+    public SimpleIntegerProperty idSaliProperty() {
+        return idSali;
+    }
+
+    public void setIdSali(int idSali) {
+        this.idSali.set(idSali);
+    }
+
+    public int getIdSeansu() {
+        return idSeansu.get();
+    }
+
+    public SimpleIntegerProperty idSeansuProperty() {
+        return idSeansu;
+    }
+
+    public void setIdSeansu(int idSeansu) {
+        this.idSeansu.set(idSeansu);
     }
 
     public int getNrMiejsca() {
@@ -33,18 +83,6 @@ public class Miejsca {
         this.nrMiejsca.set(nrMiejsca);
     }
 
-    public int getNrSali() {
-        return nrSali.get();
-    }
-
-    public SimpleIntegerProperty nrSaliProperty() {
-        return nrSali;
-    }
-
-    public void setNrSali(int nrSali) {
-        this.nrSali.set(nrSali);
-    }
-
     public int getRzad() {
         return rzad.get();
     }
@@ -55,5 +93,17 @@ public class Miejsca {
 
     public void setRzad(int rzad) {
         this.rzad.set(rzad);
+    }
+
+    @Override
+    public String toString() {
+        return "Miejsca{" +
+                "idMiejsca=" + idMiejsca +
+                ", idFilmu=" + idFilmu +
+                ", idSali=" + idSali +
+                ", idSeansu=" + idSeansu +
+                ", nrMiejsca=" + nrMiejsca +
+                ", rzad=" + rzad +
+                '}';
     }
 }
